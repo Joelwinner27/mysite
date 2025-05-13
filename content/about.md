@@ -9,11 +9,10 @@ description: Test Website
 title: About Me
 ---
 
-My name is Joel Winner and I am a recent graduate from The Ohio State University with a B.S. in Statistics.  
-Before graduating, I was a data analyst intern for the American Conservation Coalition, as well as bartending and working as an undergraduate teaching assistant.
+My name is Joel Winner, and I am a recent graduate of The Ohio State University with a B.S. in Statistics.
+Before graduating, I worked as a Data Analyst Intern for the American Conservation Coalition, while also bartending and serving as an undergraduate teaching assistant.
 
-In my free time, I enjoy working on projects at the intersection of statistics and sports.  
-Many of my past projects involved Major League Baseball or NCAA football.  
-These projects have prioritized exploring real-world sports questions using the methods I’ve learned in school.
+In my free time, I enjoy working on projects that combine statistics and sports.
+Many of my past projects have focused on Major League Baseball and NCAA football, where I’ve applied the statistical methods learned in school to explore real-world sports analytics questions.
 
 Feel free to explore the projects posted in the projects subsection here. 

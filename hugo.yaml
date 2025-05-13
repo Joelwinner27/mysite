@@ -16,7 +16,7 @@ markup:
     noClasses: no
 params:
   author: Joel Winner
-  avatarURL: images/avatar.jpg
+  avatarURL: images/IMG_5209.JPG
   colorScheme: auto
   commit: https://github.com/luizdepra/hugo-coder/tree/
   customCSS: []
