@@ -1,4 +1,4 @@
-baseURL: http://www.example.com
+baseURL: https://joelwinner.org/
 title: Home
 theme: hugo-coder
 languageCode: en
