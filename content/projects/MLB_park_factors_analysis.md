@@ -123,7 +123,7 @@ home_summary <- df2024 %>%
     .groups = "drop"
   )
 
-# 2. Away performance summary
+
 away_summary <- df2024 %>%
   group_by(game_pk, away_team) %>%
   summarize(
@@ -139,7 +139,7 @@ away_summary <- df2024 %>%
     .groups = "drop"
   )
 
-# 3. Combine both summaries
+
 team_run_summary <- full_join(
   home_summary, 
   away_summary, 
