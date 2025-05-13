@@ -1,0 +1,570 @@
+---
+title: "March-Madness-Analysis"
+author: "Joel Winner.127"
+date: "2025-05-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(cfbplotR)
+library(GGally)
+library(e1071)
+library(caret)
+library(pls)
+library(knitr)
+library(kableExtra)
+library(patchwork)
+library(factoextra)
+library(randomForest)
+library(cluster)
+library(neuralnet)
+library(nnet)
+library(class)
+```
+
+```{r, include=FALSE}
+files <- list.files("C:\\Users\\winne\\OneDrive\\Desktop\\nccam2025\\ncaam2025")
+
+for (f in files) {
+  varname <- gsub(".csv", "", f)
+  filename <- paste0("C:\\Users\\winne\\OneDrive\\Desktop\\nccam2025\\ncaam2025\\", f)
+  assign(varname, read.csv(filename))
+}
+
+data25 <- mm2002_2025[mm2002_2025$Post.Season.Tournament == "March Madness" & mm2002_2025$Season=="2025",]
+data25$Seed <- as.numeric(data25$Seed)
+rownames(data25) <- data25$Mapped.ESPN.Team.Name
+```
+
+
+
+## Exploring the data
+
+### Looking at historical champions
+
+Goal: Gain an understanding of what it takes for a team to win it all or even make it far in the tournament.  
+
+Exploring Seed and Net Rating as factors of team success leading into the tournament.  
+
+```{r,include=FALSE}
+Prev.years <- mm2002_2025 %>%
+  filter(Post.Season.Tournament == "March Madness") %>%
+  filter(Season < 2025)
+
+voilinPlot1 <- ggplot(data = Prev.years, aes(x = Final.Four., y = Net.Rating)) +
+  geom_violin(fill = "orchid4", color = "black") +
+  geom_boxplot(width = 0.2, color = "grey", alpha = 0.2) +
+  labs(x = "Made Final Four?", y = "Net Rating", title = "Net Rating vs Final Four Violin Plot") +
+  theme_bw()
+
+
+f4 <- mm2002_2025 %>%
+  filter(Post.Season.Tournament == "March Madness") %>%
+  filter(Season < 2025) %>%
+  filter(Final.Four. == "Yes")
+nf4 <- mm2002_2025 %>%
+  filter(Post.Season.Tournament == "March Madness") %>%
+  filter(Season < 2025) %>%
+  filter(Final.Four. == "No") %>%
+  arrange(as.factor(Seed))
+winner <- mm2002_2025 %>%
+  filter(Post.Season.Tournament == "March Madness") %>%
+  filter(Tournament.Winner. == "Yes")
+```
+
+```{r}
+voilinPlot1
+```
+We can see teams that made the final four had on average a higher net rating than teams that did not. 
+
+
+
+
+```{r,include=FALSE}
+p1 <- f4 %>%
+  mutate(Seed = fct_reorder(as.factor(Seed), -Net.Rating)) %>%
+  ggplot() +
+  geom_boxplot(aes(x = Seed, y = Net.Rating), fill = "lightblue") +
+  ylim(-16,40) +
+  ggtitle("Final Four Teams") +
+  labs(y = "Net Rating")
+p2 <- nf4 %>%
+  mutate(Seed = fct_reorder(as.factor(Seed), -Net.Rating)) %>%
+  ggplot() +
+  geom_boxplot(aes(x = Seed, y = Net.Rating), fill = "orange") +
+  ylim(-16,40) +
+  ggtitle("Non Final Four Teams") +
+  labs(y = "Net Rating")
+
+p3 <- ggplot(data = winner) +
+  geom_boxplot(aes(x = Seed, y = Net.Rating)) +
+  ylim(-15,40) +
+  ggtitle("Winners")
+```
+```{r}
+p1 + p2 + plot_layout(axes = "collect")
+```
+
+
+We can also see that in either case, teams with a higher seed (ie closer to 1) have on average a higher net rating than lower seeds, as well the lowest seed to make the final four (2002-2024) was an 11 seed, so we can assume it is not likely that an 12 or above seed will make the final four. Also notably a 6 seed has not made the final four since before 2002. Another thing of interest is 4 seed have a slightly higher median Net Rating than 3 seeds that made the final four.  
+
+In general Seed would be a good estimator of the which team is better as higher seeds tend to have higher net ratings.  
+
+```{r,include=FALSE}
+f4.app.plot <- f4 %>%
+  group_by(Seed) %>%
+  summarise(Finalfour_app = n()) %>%
+  mutate(Seed = fct_reorder(Seed, Finalfour_app)) %>%
+  ggplot(aes(x = Seed, y = Finalfour_app)) +
+  geom_col(fill = "dodgerblue", color = "black") +
+  coord_flip() +
+  labs(y = "Final Four Appearances", title = "Final Four Appearances by Seed (2002-2024)") +
+  theme_bw()
+```
+```{r}
+f4.app.plot
+```
+
+
+Interestingly the 11 seed has made the final four the 6th most out of any seed and no 6 seed has made it, since the 11 and 6 seed teams play first round this could be an indicator of common first round upsets.  
+
+
+```{r,include=FALSE}
+
+team_final4 <- mm2002_2025 %>%
+  filter(Post.Season.Tournament == "March Madness") %>%
+  filter(Final.Four. == "Yes") %>%
+  group_by(Mapped.ESPN.Team.Name) %>%
+  summarise(FinalFour_app = n(), .groups = "drop")
+
+team_2025_coaches <- mm2002_2025 %>%
+  filter(Season == 2025) %>%
+  select(Mapped.ESPN.Team.Name, Current.Coach)
+
+team_final4_2025 <- left_join(team_2025_coaches, team_final4, by = "Mapped.ESPN.Team.Name")
+
+team_final4_2025 <- team_final4_2025 %>%
+  filter(FinalFour_app > 1)
+
+team_plot2 <- team_final4_2025 %>%
+  mutate(Mapped.ESPN.Team.Name = fct_reorder(Mapped.ESPN.Team.Name, FinalFour_app)) %>%
+  ggplot(aes(x = Mapped.ESPN.Team.Name, FinalFour_app)) +
+  geom_col(aes(fill = Mapped.ESPN.Team.Name, color = Mapped.ESPN.Team.Name)) +
+  scale_fill_cfb(alpha = 0.8) +
+  scale_color_cfb(alt_colors = team_final4$Mapped.ESPN.Team.Name) +
+  coord_flip() +
+  theme(axis.text.y = element_cfb_logo()) +
+  labs(y = "Final Four Appearances", x = "Team", title = "Teams w/ More than 1 Final 4 appearence (2002-2024)")
+
+
+```
+```{r, include=FALSE}
+team_plot2
+```
+
+```{r,include=FALSE}
+p3 <- ggplot(data = winner, aes(x = Seed, y = Net.Rating)) +
+  geom_cfb_logos(aes(team = Mapped.ESPN.Team.Name), width = 0.09) +
+  labs(title = "2002-2024 Winners", y = "Net Rating") +
+  ylim(20,40) +
+  coord_flip() +
+  theme_bw()
+  
+final425 <- mm2002_2025 %>%
+  filter(Post.Season.Tournament == "March Madness") %>%
+  filter(Season == 2025) %>%
+  filter(Seed %in% c("1", "2", "3", "4", "7"))
+
+df <- rbind(winner, final425)
+
+p4 <- df %>%
+  mutate(color = if_else(Season == 2025,NA_character_,"b/w"),
+         alpha = if_else(Season == 2025, 1, 0.4)) %>%
+  ggplot(aes(x = Seed, y = Net.Rating)) +
+  geom_cfb_logos(aes(team = Mapped.ESPN.Team.Name, color = color, alpha = alpha), width = 0.08) +
+  scale_alpha_identity() +
+  scale_color_identity() +
+  labs(title = "2025 Teams", y = "Net Rating", subtitle = "2025 teams superimposed over all previous winners from 2002-2024\nwith 2025 teams highlighted in color") +
+  ylim(20,40) +
+  coord_flip() +
+  theme_bw()
+
+```
+
+```{r}
+p4 
+```
+Here we can see that based off Net rating all 4 of the 1 seeds this year are above almost all previous winners, with notably Florida and Duke being the top 2 that are above all other teams.  
+We see that for the 2 seed Tennessee and Alabama compare well with other 2 seeds that have won before but are well below the avg for 1 seed and this years 1 seed.  
+All 3 seeds compare well with other 3 seeds that have won, with 2 previous team having a lower net rating than all 4 of this years teams.  
+There has been 1 7 seed champion and all 4 of the 7 seeds this year have similar if not higher net ratings than Uconn when they did it.  
+
+Needless to say 1 seeds seem far ahead of the board in chances to win, and this years 1 seeds are some of the strongest there has been.  
+### Trapezoid of Success
+There is a new metric called the Trapezoid of success that guages team based off of pace and Net rating, the metric has successfully predicted the last 6 tournament winner. 
+
+```{r,include=FALSE}
+trapezoid_df <- data.frame(
+  Raw.Tempo = c(60, 63, 72, 75),  # x-coordinates
+  Net.Rating = c(40, 25, 25, 40)  # y-coordinates
+)
+trapezoid_df <- rbind(trapezoid_df, trapezoid_df[1, ])
+
+trap.plot1 <- ggplot(data = data25, aes(x = Raw.Tempo, y = Net.Rating)) +
+  geom_median_lines(aes(v_var = Raw.Tempo, h_var = Net.Rating)) +
+  geom_cfb_logos(aes(team = Mapped.ESPN.Team.Name), width = 0.055) +
+  geom_polygon(data = trapezoid_df, aes(x = Raw.Tempo, y = Net.Rating), fill = NA, color = "limegreen", linewidth = 1.3) +
+  annotate("text", x = 61, y = 27, label = "Trapezoid of\nExcellence", 
+           color = "black", fontface = "bold", size = 3) +
+  labs(x = "Raw Tempo", y = "Net Rating", title = "Trapezoid of Excellence", subtitle = "2025 tournament teams") +
+  theme_bw()
+```
+```{r}
+trap.plot1
+```
+
+Credit to Ryan Hammer (@ryanhammer09 on twitter), the idea is that the ideal team in the tournament dont have to much of an extreme pace/tempo, but better teams are allowed more variation. According to Ryan teams within the trapezoid have historical success, and also high seeded teams that fall outside have a pattern of being eleminated early. 
+
+```{r, include=FALSE}
+datatet <- rbind(data25, winner)
+
+trap.plot2 <- datatet %>%
+  mutate(color = if_else(Tournament.Winner. == "Yes",NA_character_,"b/w"),
+         alpha = if_else(Tournament.Winner. == "Yes", 1, 0.6)) %>%
+  ggplot(aes(x = Raw.Tempo, y = Net.Rating)) +
+  geom_median_lines(aes(v_var = Raw.Tempo, h_var = Net.Rating)) +
+  geom_cfb_logos(aes(team = Mapped.ESPN.Team.Name, color = color, alpha = alpha), width = 0.055) +
+  geom_polygon(data = trapezoid_df, aes(x = Raw.Tempo, y = Net.Rating), fill = NA, color = "limegreen", linewidth = 1.3) +
+  scale_alpha_identity() +
+  scale_color_identity() +
+  annotate("text", x = 61, y = 27, label = "Trapezoid of\nExcellence", 
+           color = "black", fontface = "bold", size = 3) +
+  labs(x = "Raw Tempo", y = "Net Rating", title = "Trapezoid of Excellence", subtitle = "Superimposed previous winners") +
+  theme_bw()
+```
+```{r}
+trap.plot2
+```
+
+We can see the bulk of previous winners reside inside the trapezoid with some at the right Rating but higher tempo, and UVA at a lower tempo.
+
+```{r,include=FALSE}
+plot1 <- ggplot(data = mm2002_2025, aes(x = Final.Four., y = Adjusted.Offensive.Efficiency)) +
+  geom_boxplot(fill = "blue") +
+  labs(x = "Made Final Four?", y = "Adj Off Eff", title = "Adj. Off. Eff.")
+
+plot2 <- ggplot(data = mm2002_2025, aes(x = Final.Four., y = Adjusted.Defensive.Efficiency)) +
+  geom_boxplot(fill = "orange") +
+  labs(x = "Made Final Four?", y = "Adj Def Eff", title = "Adj. Def. Eff.")
+
+plot3 <- ggplot(data = mm2002_2025, aes(x = Final.Four., y = Raw.Tempo)) +
+  geom_boxplot(fill = "purple") +
+  labs(x = "Made Final Four?", y = "Raw Tempo", title = "Raw Tempo")
+
+plot4 <- ggplot(data = mm2002_2025, aes(x = Final.Four., y = BlockPct)) +
+  geom_boxplot(fill = "darkgreen") +
+  labs(x = "Made Final Four?", y = "Block %", title = "Block Percentage")
+
+
+```
+```{r}
+plot1 + plot2 + plot3 + plot4 +
+  plot_layout(guides = "collect")
+```
+
+We can see from the plots above that there is a noticeable difference in Adjusted Offense and Defensive Eff. as well as Block percentage for teams that made it far in the tournament and teams that did not. Raw tempo did not have a difference but from the exploration plots of the trapezoid of excellence, it would be worthy to be used in the models.  
+
+```{r,include=FALSE}
+x1 <- ggplot(data25, aes(x = Adjusted.Offensive.Efficiency, y = Net.Rating)) +
+  geom_cfb_logos(aes(team = Mapped.ESPN.Team.Name), width = 0.07)
+x2 <- ggplot(data25, aes(x = Adjusted.Defensive.Efficiency, y = Net.Rating)) +
+  geom_cfb_logos(aes(team = Mapped.ESPN.Team.Name), width = 0.07)
+x3 <- ggplot(data25, aes(x = Adjusted.Offensive.Efficiency, y = Adjusted.Defensive.Efficiency)) +
+  geom_cfb_logos(aes(team = Mapped.ESPN.Team.Name), width = 0.07)
+
+
+```
+```{r}
+(x3 | (x1/x2)) + plot_layout(guides = "collect")
+```
+
+
+From these plots we can see that Net rating and adj off eff as well as adj def eff are highly correlated but the two eff stats are only less correlated with each other. So we will leave net rating out of the models and continue with using Adjusted.Offensive.Efficiency, Adjusted.Defensive.Efficiency, Raw.Tempo, and Block Percentage as covariates in further models.  
+
+## Clustering 
+
+With these clustering methods I aim to explore the patterns between previous tournament winner as well as the teams in this years tournament to see if there are any teams that stick out or are similar to previous winners.  
+
+
+
+```{r, include=FALSE}
+# we want all 2025 teams as well as previous successful teams to see
+
+success <- mm2002_2025 %>%
+  filter(Post.Season.Tournament == "March Madness") %>%
+  filter(Tournament.Winner. == "Yes")
+
+df25 <- filter(data25, Seed <= 5)
+dfinterest <- rbind(df25, success)
+
+rownames(dfinterest) <- paste(dfinterest$Mapped.ESPN.Team.Name, dfinterest$Season) # create team names for team name and season for uniqueness
+
+
+subset <- dfinterest %>%
+  select(c("Raw.Tempo", "Adjusted.Offensive.Efficiency", "Adjusted.Defensive.Efficiency",
+           "BlockPct"))  # covariates of choice
+
+scaled.subset <- scale(subset, center = T)
+
+```
+```{r}
+d_eucli <- dist(subset, method = "euclidean") # using euclidean distance
+
+fviz_nbclust(scaled.subset, hcut, method = "wss", k.max = 8) # k could be 4-6
+
+agnes.1 <- agnes(d_eucli, diss = T, metric = "euclidean")
+pltree(agnes.1, main = "Agglomerative Euclidean Distance", hang = -1, xlab = "clustering by Raw.Tempo, Adj Off Eff, Adj Def Eff, Block %")
+rect.hclust(agnes.1, k = 5, border = 2) # draw boxes around clusters
+```
+
+
+There isn't a great "elbow" point here but 5 or 6 seems the most reasonably, I ended up choosing 5 clusters that can be seen in the dendrogram.  
+The dendrogram holds on previous winner as well as seeds 1-5 in this years tournament, we can see the left most cluster holds 3 of out 1 seeds this year and multiple other previous winners, the cluster to the right shows all teams from this years tournament implying there isn't a strong connection to previous winners, the next cluster shows Houston and Tennessee with other winners, then we have a large collection of previous winners with this years teams, and finally a cluster of just Memphis.  
+
+We could possibly say Memphis, and the teams in cluster 2 might not have the best chances as they don't compare with other teams that have won.  
+
+### Kmeans clustering
+```{r}
+# How do lower seed cluster with past winners of higher seed
+data252 <- filter(data25, Seed > 5)
+dfinterest2 <- rbind(data252, success)
+rownames(dfinterest2) <- paste(dfinterest2$Mapped.ESPN.Team.Name, dfinterest2$Season)
+subset2 <- dfinterest2 %>%
+  select(c("Raw.Tempo", "Adjusted.Offensive.Efficiency", "Adjusted.Defensive.Efficiency",
+           "BlockPct")) 
+
+scaled.subset2 <- scale(subset2, center = T)
+d_eucli <- dist(subset2, method = "euclidean")
+
+fviz_nbclust(scaled.subset2, hcut, method = "wss", k.max = 8) # k = 5
+
+out.2 <- kmeans(scaled.subset2, centers = 6, nstart = 10)
+fviz_cluster(out.2, data = scaled.subset2) +
+  ggtitle("Cluster Plot for Seeds > 5, with previous winners")
+
+out.3 <- kmeans(scaled.subset, centers = 5, nstart = 10)
+fviz_cluster(out.3, data = scaled.subset) +
+  ggtitle("Cluster Plot for Seeds <= 5, with previous winners")
+```
+
+
+It appears all of the cluster 3 and 5 are teams that don't compare well with previous champions, but the other clusters contain winners for the > 5 plot.  
+
+Notably in the <= 5 seed plot, Duke, Auburn and Florida are in their own cluster with previous winners, and we see im cluster 2 st johns and memphis are will winners as well. 
+```{r,include=FALSE}
+#set.seed(127)
+data25. <- mm2002_2025[mm2002_2025$Post.Season.Tournament == "March Madness" & mm2002_2025$Season=="2025",]
+data25.$Seed <- as.numeric(data25$Seed)
+rownames(data25.) <- data25$Mapped.ESPN.Team.Name
+
+dfinterest3 <- rbind(data25., success)
+rownames(dfinterest3) <- paste(dfinterest3$Mapped.ESPN.Team.Name, dfinterest3$Season)
+
+subset3 <- dfinterest3 %>%
+  select(Season, Seed, Raw.Tempo, Adjusted.Offensive.Efficiency,
+         Adjusted.Defensive.Efficiency, BlockPct) %>%
+  mutate(Seed = as.numeric(Seed))
+
+labels <- ifelse(subset3$Season != 2025, "lightseagreen",                
+           ifelse(subset3$Seed < 5, "black", "lightsalmon"))
+
+
+
+```
+```{r}
+set.seed(127)
+scaled.subset3 <- scale(subset3 %>%
+                          select(Raw.Tempo, Adjusted.Offensive.Efficiency,
+                                 Adjusted.Defensive.Efficiency, BlockPct))
+pca <- prcomp(scaled.subset3)
+
+plot(pca$x[,1], pca$x[,2], xlab = "V1", ylab = "V2", pch = 16, col = "white",
+     main = "PCA plot for 2025 teams and previous winners")
+
+text(pca$x[,1], pca$x[,2], labels = rownames(scaled.subset3), cex = 0.66, col = labels)
+legend("bottomleft", 
+       legend = c("Champions", "2025 & Seed < 5", "2025 & Seed >= 5"), 
+       col = c("lightseagreen", "black", "lightsalmon"), 
+       pch = 16)
+```
+We can see that all previous champions fall somewhere between 0 and 2 on v1, we can see notable teams like Michigan St., Auburn, Texas A&M, Tennessee, Texas Tech, Kentucky, Maryland, Alabama and the 1 seed residing in there as well as a good amount of >= 5 seeded teams like Georgia, Illinois, VCU, and others.  
+
+
+
+## Supervised Learning
+
+Moving on to some supervised learning techniques to help better examine every pick in this years bracket. To do this I'll look into 2 different response variables that will be the indicator of success, firstly Seed and next if the team made the final four or not. I will use all of the march madness teams from 2002-2024 to train the models and then use those models to make predictions for the 2025 teams. The same variables of interest will be used as before.  
+
+
+The first model will be a Naive Bayes model, which essentially relies on using Bayes Theorem and assumes that all features of the model are independent of each other. So for this model is assumes tempo, offensive and defense efficiency, and block percentage or independent, and pick the seed/final four appearance with the highest probability given those stat lines.  
+```{r,include=FALSE}
+pastTeams <- mm2002_2025 %>%
+  filter(Post.Season.Tournament == "March Madness") %>%
+  filter(Season != 2025)
+
+pastTeams$Seed <- as.factor(pastTeams$Seed)
+data25$Seed <- as.factor(data25$Seed)
+
+final_four_teams <- c("Florida", "Houston", "Duke", "Auburn")
+data25$Final.Four. <- "No"
+data25$Final.Four.[data25$Mapped.ESPN.Team.Name %in% final_four_teams] <- "Yes"
+
+pastTeams$Final.Four. <- as.factor(pastTeams$Final.Four.)
+data25$Final.Four. <- as.factor(data25$Final.Four.)
+
+
+
+
+```
+
+```{r}
+# Naive Bayes
+naiveSeed <- naiveBayes(as.factor(Seed) ~ Raw.Tempo + Adjusted.Offensive.Efficiency +
+         Adjusted.Defensive.Efficiency + BlockPct, data = pastTeams)
+naiveFF <- naiveBayes(as.factor(Final.Four.) ~ Raw.Tempo + Adjusted.Offensive.Efficiency +
+         Adjusted.Defensive.Efficiency + BlockPct, data = pastTeams)
+```
+
+
+Next we will use a random forest model. Random forests models are made up of decision trees, each tree "learns" by splitting based on certain features (tempo,, block %, etc), and then picks the most common outcome based on those splits. The forest part comes into play since there are hundreds of the trees and all of them are averaged out to give us predictions.  
+```{r}
+# Random Forest
+rfSeed <- randomForest(as.factor(Seed) ~ Raw.Tempo + Adjusted.Offensive.Efficiency +
+         Adjusted.Defensive.Efficiency + BlockPct, data = pastTeams)
+rfFF <- randomForest(as.factor(Final.Four.) ~ Raw.Tempo + Adjusted.Offensive.Efficiency +
+         Adjusted.Defensive.Efficiency + BlockPct, data = pastTeams)
+
+
+
+```
+
+Next a Support Vector Machine (SVM), is a model which projects the data into a higher dimensional space and finds an optimal hyperplane to separate the data into different classes.  
+
+```{r}
+# SVM
+svmSeed <- svm(Seed ~ Raw.Tempo + Adjusted.Offensive.Efficiency +
+         Adjusted.Defensive.Efficiency + BlockPct,
+         data = pastTeams,
+         kernel = "radial")
+svmFF <- svm(as.factor(Final.Four.) ~ Raw.Tempo + Adjusted.Offensive.Efficiency +
+         Adjusted.Defensive.Efficiency + BlockPct,
+         data = pastTeams,
+         kernel = "radial")
+
+predictors <- data25[, c("Raw.Tempo", "Adjusted.Offensive.Efficiency",
+                         "Adjusted.Defensive.Efficiency", "BlockPct")]
+
+
+
+```
+
+```{r}
+preds <- predict(naiveSeed, data25)
+preds <- factor(preds, levels = levels(data25$Seed))
+confusionMatrix(preds, data25$Seed)
+```
+
+Looking at naive Bayes model, we can see the model's accuracy is low, although higher than randomly guessing, but really struggles at predicting the middle seeded teams. To combat this I split the teams into three groups of high, medium and bottom seeded teams and will have the Bayes model and KNN model predicted these grouping, which will hopefully share some insight into what "bubble" teams are closer to higher ranking teams or bottom teams.  
+
+
+```{r, include=FALSE}
+pastTeams$SeedGroup <- cut(
+  as.numeric(as.character(pastTeams$Seed)),  # Convert factor → character → numeric
+  breaks = c(0, 4, 12, 16),
+  labels = c("Top", "Middle", "Bottom"),
+  include.lowest = TRUE,
+  right = TRUE
+)
+data25$SeedGroup <- cut(
+  as.numeric(as.character(data25$Seed)),  # Convert factor → character → numeric
+  breaks = c(0, 4, 12, 16),
+  labels = c("Top", "Middle", "Bottom"),
+  include.lowest = TRUE,
+  right = TRUE
+)
+
+
+
+
+```
+
+```{r}
+naiveSeed2 <- naiveBayes(as.factor(SeedGroup) ~ Raw.Tempo + Adjusted.Offensive.Efficiency +
+         Adjusted.Defensive.Efficiency + BlockPct, data = pastTeams)
+```
+
+KNN or k'th nearest neighbor, is an algorithm which uses proximity to make classifications or predictions about the grouping of an individual points.  
+
+```{r}
+# KNN
+train_X <- pastTeams[, c("Raw.Tempo", "Adjusted.Offensive.Efficiency",
+                         "Adjusted.Defensive.Efficiency", "BlockPct")]
+test_X <- data25[, c("Raw.Tempo", "Adjusted.Offensive.Efficiency",
+                       "Adjusted.Defensive.Efficiency", "BlockPct")]
+
+train_Y <- pastTeams$SeedGroup
+
+knnSeed <- knn(train = train_X, test = test_X, cl = train_Y, k = 4)
+```
+
+```{r, include=FALSE}
+results <- data.frame(
+  Team = rownames(data25),
+  Actual_Seed = as.factor(data25$Seed),
+  Actual_FF = data25$Final.Four.,
+  Naive_Bayes_Pred_Seed = predict(naiveSeed, data25),
+  NB_FF_Pred = predict(naiveFF, data25)
+)
+results <- results %>%
+  mutate(SeedGroup = predict(naiveSeed2, data25))
+
+results <- results %>% 
+  mutate(rf_Seed = predict(rfSeed, data25)) %>%
+  mutate(rf_FF = predict(rfFF, data25))
+
+results <- results %>% 
+  mutate(Seed = predict(svmSeed, predictors)) %>%
+  mutate(FinalFour = predict(svmFF, predictors)) %>%
+  mutate(knn = knnSeed)
+
+results <- results %>%
+  arrange(Actual_Seed)
+```
+
+
+```{r,include=FALSE}
+table1 <- kbl(results, booktabs = T, longtable = T, col.names = c("Team", "Actual Seed", "Actual Final Four", "Seed", "Final Four","Group", "Seed", "Final Four", "Seed", "Final Four", "Group")) %>%
+  kable_styling(latex_options = c("striped", "repeat_header"),
+                full_width = FALSE) %>%
+  column_spec(1, bold = T, width = "3cm") %>%
+  column_spec(2:11, width = "1cm") %>%
+  add_header_above(c("", "", "", "Naive Bayes" = 3, "Random Forest" = 2, "SVM" = 2, "KNN" = 1)) %>%
+  add_header_above(c("", "", "", "Predictions" = 8))
+```
+
+Looking back at some of my picks the data did not support:  
+Lipscomb beating Iowa state, all models and clustering had Lipscomb as a bottom tier team and Iowa St. as a top team if not a 1 seed.  
+Uconn snuck into some of the models top tiers while Oklahoma appeared nothing but average, Uconn was the better team and I picked off who I didn't want to win it all again, although the teams were probably pretty well matched.  
+
+Grand Canyon over Maryland, the models were accurate predicting grand canyon as a 13 seed and a bottom/middle team, while Maryland looked comparable to previous winners and was predicted high in seeding. This was nothing more of a recency bias pick and I didn't believe in Maryland after watching them lose to that team up north in the B1G tournament.  
+2 of the models predicted Arkansas as a 5 seed, although a middle seeded team, but they over predicted Kansas as well.  
+picking McNeese and Troy to win was nothing more than expecting madness, those choices were not supported here.  
+
+As for the final four, i predicted Florida and duke, which which predicted to make it except SVM had Florida out of it, but everything here showed these 1 seeds were some of the best we've seen since 2002 so they should have made it, i still like my picks of Tennessee and Michigan State to make it and Tennessee was even predicted to reach final four in the Bayes model. As for the champion, it appears Duke was the best team ratings wise, but for some reason i liked Florida more and luckily i picked them.  
+These predictions can be seen in the table below.  
+
+```{r}
+table1
+```

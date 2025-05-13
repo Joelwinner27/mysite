@@ -1,0 +1,76 @@
+baseURL: http://www.example.com
+title: Home
+theme: hugo-coder
+languageCode: en
+defaultContentLanguage: en
+enableEmoji: yes
+pagination:
+  pagerSize: 6
+services:
+  disqus: {}
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+  highlight:
+    noClasses: no
+params:
+  author: Joel Winner
+  avatarURL: images/avatar.jpg
+  colorScheme: auto
+  commit: https://github.com/luizdepra/hugo-coder/tree/
+  customCSS: []
+  customJS: []
+  customRemoteJS: []
+  customSCSS: []
+  dateFormat: January 2, 2006
+  description: Joel Winner's personal website
+  hideColorSchemeToggle: no
+  info:
+    - Statistics Graduate
+    - OSU alum
+  keywords: blog,statistician,personal
+  maxSeeAlsoItems: 5
+  rtl: no
+  since: 2025
+  social:
+    - icon: fa-brands fa-github fa-2x
+      name: Github
+      url: https://github.com/Joelwinner27
+      weight: 1
+    - icon: fa-brands fa-x-twitter fa-2x
+      name: Twitter
+      url: https://x.com/joel_winne436
+      weight: 3
+    - icon: fa-brands fa-linkedin fa-2x
+      name: LinkedIn
+      url: https://www.linkedin.com/in/joel-winner/
+      weight: 4
+    - icon: fa-solid fa-chart-bar fa-2x
+      name: Tableau
+      url: https://public.tableau.com/app/profile/joel.winner
+      weight: 5
+taxonomies:
+  author: authors
+  category: categories
+  series: series
+  tag: tags
+languages:
+  en:
+    languageName: ':uk:'
+    menu:
+      main:
+        - name: About
+          url: about/
+          weight: 1
+        - name: Blog
+          url: posts/
+          weight: 2
+        - name: Projects
+          url: projects/
+          weight: 3
+        - name: Contact me
+          url: contact/
+          weight: 5
+  
+    
