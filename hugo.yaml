@@ -38,18 +38,18 @@ params:
       name: Github
       url: https://github.com/Joelwinner27
       weight: 1
-    - icon: fa-brands fa-x-twitter fa-2x
-      name: Twitter
-      url: https://x.com/joel_winne436
-      weight: 3
     - icon: fa-brands fa-linkedin fa-2x
       name: LinkedIn
       url: https://www.linkedin.com/in/joel-winner/
-      weight: 4
+      weight: 2
     - icon: fa-solid fa-chart-bar fa-2x
       name: Tableau
       url: https://public.tableau.com/app/profile/joel.winner
-      weight: 5
+      weight: 3
+    - icon: fa-solid fa-envelope fa-2x
+      name: email
+      url: contact/
+      weight: 4
 taxonomies:
   author: authors
   category: categories
