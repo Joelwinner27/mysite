@@ -1,0 +1,204 @@
+---
+title: "Google Search Interest Time Series example"
+author: "Joel Winner.127"
+date: "2025-04-21"
+output: blogdown::html_page
+math: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(astsa)
+```
+
+
+## Introduction
+This report explores monthly search interest in the term "Vacation" within the United States, using data from Google Trends spanning from 2004 to early 2024. The search interest values are scaled from 0 to 100, where 100 represents peak popularity for the term during the time period. Given the nature of vacation planning, the data naturally display strong annual seasonality—with peaks typically occurring during summer months—as well as a long-term trend that suggests evolving interest over time.
+
+The objective of this analysis is to model and forecast future search interest using time series techniques. Two complementary approaches are considered. First, we apply a decomposition method, explicitly modeling the trend and seasonal components using regression, with an AR(1) process capturing residual autocorrelation. Second, we implement a SARIMA model, which incorporates both seasonal and non-seasonal differencing to address non-stationarity in a more automated fashion.
+
+By comparing the performance and forecasts of both models, we aim to evaluate their ability to capture the structure of the series and provide accurate predictions. This type of modeling has practical implications for businesses, travel agencies, or policymakers aiming to anticipate consumer interest in vacation planning.
+
+https://trends.google.com/trends/explore?date=all&geo=US&q=vacation&hl=en 
+
+```{r,include=FALSE}
+df <- read.csv("C:\\Users\\winne\\Downloads\\multiTimeline (2).csv")
+df$Category..All.categories <- as.numeric(df$Category..All.categories)
+vac <- df$Category..All.categories[-1]
+vac.ts <- ts(vac, start = 2004, frequency = 12)
+```
+
+```{r}
+plot(vac.ts, ylab = "Interest/Searches", main = "Google searches for term 'Vacation'")
+```
+From the time series plot, we observe a long-term decreasing trend with regular seasonal fluctuations. Interest appears to fall steadily until around 2012, after which it levels off, suggesting a possible piecewise trend. Seasonal peaks and troughs indicate annual seasonality.  
+
+## Trend and Seasonality
+
+We began by log-transforming the series to stabilize the variance. The log-transformed data showed both a nonlinear increasing trend and strong annual seasonality. A piecewise linear regression was used to model the trend, segmented at 2012, alongside a seasonal means model using monthly dummy variables. 
+
+To explicitly model the trend and seasonal components, we applied a piecewise linear regression model with monthly seasonal indicators to the log-transformed data. The trend was segmented around 2012, where a visible shift in growth occurred. The model used:
+
+$$\log(y_t) = \beta_1 * T_1 + \beta_2 * T_2 + \gamma_{month(t)} + z_t$$  
+
+where $z_t$ is the residual stationary component. 
+
+The residuals from this model exhibited autocorrelation consistent with an AR(1) structure. We therefore modeled the residual component as:  
+$z_t = 0.542z_{t-1} +w_t$
+
+```{r,include=FALSE}
+lvac <- log(vac.ts)
+Month = factor(rep(1:12, 22))
+levels(Month) = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+Month <- Month[-(257:264)]
+
+Time <- time(lvac)
+Time1 <- pmin(Time, 2012)
+Time2 <- pmax(0, Time - 2012)
+
+mod3.2 <- lm(lvac ~ 0 + Time1 + Time2 + Month)
+plot(lvac)
+lines(c(time(lvac)), c(fitted(mod3.2)), col = "red", lty = 2, lwd = 1)
+z1 <- ts(resid(mod3.2), start =  2004, frequency = 12)
+
+```
+```{r}
+pacf(z1, main="PACF for Residuals")
+```
+
+Combining the trend, seasonal effects, and AR(1) residual forecasts, we produced forecasts for the next 30 months. These were back-transformed to the original scale and included 95% prediction intervals. This approach offers a clear, interpretable decomposition of seasonal and long-term behavior.
+
+```{r,include=FALSE}
+mod4 <- sarima(z1, 1,0,0, no.constant = T, details = F)
+mod4a <- arima(z1, order = c(1,0,0), include.mean = F)
+
+mod4.pr <- predict(mod4a, n.ahead = 30)
+zhat = mod4.pr$pr
+pi.z.upper = mod4.pr$pr + 2*mod4.pr$se
+pi.z.lower = mod4.pr$pr - 2*mod4.pr$se
+
+plot(z1, ylab="Residuals",xlim =c(2004, 2028), main=expression("Forecasting "~z[t]))
+points(zhat, col="red")
+lines(pi.z.upper, lty=2, col="blue")
+lines(pi.z.lower, lty=2, col="blue")
+newTime = seq(from=2004, to = 2027+11/12, by=1/12)
+#newMonths <- factor(newMonths, levels = levels(mod3.2$model$Month))
+newMonths <- factor(rep(month.abb, length.out = length(newTime)),
+                    levels = levels(mod3.2$model$Month))
+#levels(newMonths) = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+newdf <- data.frame(Time1 = pmin(newTime, 2012),
+                    Time2 = pmax(0, newTime - 2012),
+                    Month = newMonths)
+
+trend <- predict(mod3.2, newdata = newdf)
+
+yhat = tail(trend, 30) + zhat
+pi.y.lower = tail(trend, 30) + pi.z.lower
+pi.y.upper = tail(trend, 30) + pi.z.upper
+
+plot(lvac, xlim=c(2004, 2029),
+     main="Forecasting Search Interest on log scale", ylab = "Search Interest")
+points(yhat, col="red")
+lines(pi.y.upper, lty=2, col="blue")
+lines(pi.y.lower, lty=2, col="blue")
+x1hat = exp(yhat)
+pi.x.lower = exp(pi.y.lower)
+pi.x.upper = exp(pi.y.upper)
+```
+
+```{r}
+plot(vac.ts, xlim=c(2004, 2029), main="Forecasting Search Interest", ylab = "Search Interest")
+points(x1hat, col="red")
+lines(pi.x.upper, lty=2, col="blue")
+lines(pi.x.lower, lty=2, col="blue")
+legend("topright",
+       legend = c("Observed", "Forecast", "Prediction Interval"),
+       col = c("black", "red", "blue"),
+       lty = c(1, NA, 2),
+       pch = c(NA, 1, NA),
+       bty = "n")
+```
+
+## SARIMA Modeling
+
+To provide a more compact, automated approach, we also modeled the log-transformed data using seasonal difference at lag 12 and regular differencing. The differenced series appeared stationary, and we compared three candidate models:  
+
+- SARIMA(1,1,0)(0,1,1)[12]  
+- SARIMA(0,1,1)(0,1,1)[12]  
+- SARIMA(1,1,1)(0,1,1)[12]  
+
+Based on AIC, the best model was:  
+$(1-0.648B)(1-B)(1-B^{12})x_t = (1-0.964B)(1-0.583B^{12})w_t$.  
+where $w_t$ is white noise with $\sigma^2 = 0.005$  
+
+```{r,include=FALSE}
+dlvac <- diff(lvac, differences = 1)              
+ddlvac <- diff(dlvac, lag = 12, differences = 1)
+plot(ddlvac)
+acf(ddlvac)
+pacf(ddlvac)
+# Model 1: SARIMA(1,1,0)(0,1,1)[12]
+mod1 <- arima(lvac, order = c(1,1,0),
+              seasonal = list(order = c(0,1,1), period = 12))
+
+# Model 2: SARIMA(0,1,1)(0,1,1)[12]
+mod2 <- arima(lvac, order = c(0,1,1),
+              seasonal = list(order = c(0,1,1), period = 12))
+
+# Model 3: SARIMA(1,1,1)(0,1,1)[12]
+mod3 <- arima(lvac, order = c(1,1,1),
+              seasonal = list(order = c(0,1,1), period = 12))
+
+AIC(mod1, mod2, mod3)
+sarima_forecast <- predict(mod3, n.ahead = 30)
+yhat_log <- sarima_forecast$pred
+
+# 95% prediction intervals (log scale)
+upper_log <- yhat_log + 2 * sarima_forecast$se
+lower_log <- yhat_log - 2 * sarima_forecast$se
+
+# Back-transform to original scale
+yhat <- exp(yhat_log)
+upper <- exp(upper_log)
+lower <- exp(lower_log)
+
+forecast_time <- seq(from = end(vac.ts)[1] + (end(vac.ts)[2] - 1)/12 + 1/12,
+                     by = 1/12, length.out = 30)
+```
+```{r}
+plot(vac.ts, xlim = c(2004, 2029), ylim = range(vac.ts, upper), 
+     main = "Forecast from SARIMA(1,1,1)(0,1,1)[12] Model", ylab = "Search Interest", xlab = "Time")
+
+points(forecast_time, yhat, col = "red")
+
+# prediction interval lines
+lines(forecast_time, upper, col = "blue", lty = 2)
+lines(forecast_time, lower, col = "blue", lty = 2)
+legend("topright",
+       legend = c("Observed", "Forecast", "95% Prediction Interval"),
+       col = c("black", "red", "blue"),
+       lty = c(1, NA, 2),
+       pch = c(NA, 1, NA),
+       bty = "n")
+```
+
+## Model Comparision
+
+Both approaches adequately captured the trend and seasonality in the data. The regression + AR(1) model allows for clear interpretation of long-term behavior, while the SARIMA model fits slightly better and requires fewer parameters. Forecasts from both models were similar, but from the ACF plots of residuals confirm that the SARIMA model more effectively removed autocorrelations, indicating a better fit to the underlying process. 
+
+```{r,include=FALSE}
+res_sarima <- residuals(mod3)
+```
+
+
+```{r}
+# ACF plot of residuals
+acf(res_sarima, main = "ACF of SARIMA Residuals")
+acf(z1, main = "ACF for Trend + Seasonality Residuals")
+```
+
+## Conclusion
+
+This project analyzed Google search interest for the term “Vacation,” revealing strong yearly seasonality and a shifting long-term trend. We modeled the data using both a regression-based decomposition approach and a SARIMA model to capture and forecast this behavior.
+
+While both methods produced similar forecasts, the SARIMA(1,1,1)(0,1,1)[12] model offered a better fit with fewer parameters. However, the regression approach provided clearer insight into structural components like trend changes and seasonal effects. Together, these models highlight how time series techniques can effectively describe and anticipate consumer interest patterns.
