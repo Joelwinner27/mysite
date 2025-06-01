@@ -73,7 +73,7 @@ languages:
           url: contact/
           weight: 4
         - name: CV
-          url: Joel-Resume.pdf/
+          url: Joel-Resume-website .pdf/
           weight: 5
   
     

@@ -39,7 +39,7 @@ We began by log-transforming the series to stabilize the variance. The log-trans
 
 To explicitly model the trend and seasonal components, we applied a piecewise linear regression model with monthly seasonal indicators to the log-transformed data. The trend was segmented around 2012, where a visible shift in growth occurred. The model used:
 
-$$\log(y_t) = \beta_1 * T_1 + \beta_2 * T_2 + \gamma_{month(t)} + z_t$$  
+$\log(y_t) = \beta_1 * T_1 + \beta_2 * T_2 + \gamma_{month(t)} + z_t$  
 
 where $z_t$ is the residual stationary component. 
 
