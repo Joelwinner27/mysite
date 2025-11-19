@@ -354,7 +354,7 @@ wk11_matchups_gt <- wk11_matchups_top202 %>%
     proj_margin_away   = "Margin (lazy home field adv)"
   ) %>%
   tab_header(
-    title    = md("**Week 11 Matchups (top 20 teams)**"),
+    title    = md("**11/22 Matchups (top 20 teams)**"),
     subtitle = "Projected spreads"
   ) %>%
   tab_options(
