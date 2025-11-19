@@ -4,6 +4,9 @@ author: "Joel Winner"
 date: 2025-06-04T00:00:00-05:00
 categories: ["CFB"]
 tags: ["2025-26 Season"]
+output:
+  blogdown::html_page:
+    self_contained: false
 ---
 
 ```{r setup, include=FALSE}
@@ -11,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(cfbfastR)
 library(tidyverse)
 library(cfbplotR)
+options(blogdown.method = "html")
 ```
 ```{r,include=FALSE}
 Sys.setenv(CFBD_API_KEY = "lQbW5MpnCOig4bXB5ENTaDcA+d05LQVbejlWnUyBnfmM2TInqsv8CxfzBe8Xz2wg")
@@ -371,14 +375,17 @@ Write interpretation here...
 
 
 ```{r}
+# Displaying graph code
 plot1
 ```
 
 ```{r}
+# Printing table code
 rank_table_gt
 ```
 
 ```{r}
+# Printing table code
 wk11_matchups_gt
 ```
 
