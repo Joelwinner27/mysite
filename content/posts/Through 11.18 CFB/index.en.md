@@ -18,20 +18,20 @@ plot1
 rank_table_gt
 ```
 
-<div id="kpfmbapqti" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#kpfmbapqti table {
+<div id="exavhrnugm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#exavhrnugm table {
   font-family: Helvetica;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-&#10;#kpfmbapqti thead, #kpfmbapqti tbody, #kpfmbapqti tfoot, #kpfmbapqti tr, #kpfmbapqti td, #kpfmbapqti th {
+&#10;#exavhrnugm thead, #exavhrnugm tbody, #exavhrnugm tfoot, #exavhrnugm tr, #exavhrnugm td, #exavhrnugm th {
   border-style: none;
 }
-&#10;#kpfmbapqti p {
+&#10;#exavhrnugm p {
   margin: 0;
   padding: 0;
 }
-&#10;#kpfmbapqti .gt_table {
+&#10;#exavhrnugm .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -56,11 +56,11 @@ rank_table_gt
   border-left-width: 2px;
   border-left-color: #D3D3D3;
 }
-&#10;#kpfmbapqti .gt_caption {
+&#10;#exavhrnugm .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
-&#10;#kpfmbapqti .gt_title {
+&#10;#exavhrnugm .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -71,7 +71,7 @@ rank_table_gt
   border-bottom-color: #FFFFFF;
   border-bottom-width: 0;
 }
-&#10;#kpfmbapqti .gt_subtitle {
+&#10;#exavhrnugm .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -82,7 +82,7 @@ rank_table_gt
   border-top-color: #FFFFFF;
   border-top-width: 0;
 }
-&#10;#kpfmbapqti .gt_heading {
+&#10;#exavhrnugm .gt_heading {
   background-color: #FFFFFF;
   text-align: left;
   border-bottom-color: #FFFFFF;
@@ -93,12 +93,12 @@ rank_table_gt
   border-right-width: 1px;
   border-right-color: #D3D3D3;
 }
-&#10;#kpfmbapqti .gt_bottom_border {
+&#10;#exavhrnugm .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
-&#10;#kpfmbapqti .gt_col_headings {
+&#10;#exavhrnugm .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -112,7 +112,7 @@ rank_table_gt
   border-right-width: 1px;
   border-right-color: #D3D3D3;
 }
-&#10;#kpfmbapqti .gt_col_heading {
+&#10;#exavhrnugm .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -131,7 +131,7 @@ rank_table_gt
   padding-right: 5px;
   overflow-x: hidden;
 }
-&#10;#kpfmbapqti .gt_column_spanner_outer {
+&#10;#exavhrnugm .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -142,13 +142,13 @@ rank_table_gt
   padding-left: 4px;
   padding-right: 4px;
 }
-&#10;#kpfmbapqti .gt_column_spanner_outer:first-child {
+&#10;#exavhrnugm .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
-&#10;#kpfmbapqti .gt_column_spanner_outer:last-child {
+&#10;#exavhrnugm .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
-&#10;#kpfmbapqti .gt_column_spanner {
+&#10;#exavhrnugm .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -159,10 +159,10 @@ rank_table_gt
   display: inline-block;
   width: 100%;
 }
-&#10;#kpfmbapqti .gt_spanner_row {
+&#10;#exavhrnugm .gt_spanner_row {
   border-bottom-style: hidden;
 }
-&#10;#kpfmbapqti .gt_group_heading {
+&#10;#exavhrnugm .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -187,7 +187,7 @@ rank_table_gt
   vertical-align: middle;
   text-align: left;
 }
-&#10;#kpfmbapqti .gt_empty_group_heading {
+&#10;#exavhrnugm .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -201,13 +201,13 @@ rank_table_gt
   border-bottom-color: #D3D3D3;
   vertical-align: middle;
 }
-&#10;#kpfmbapqti .gt_from_md > :first-child {
+&#10;#exavhrnugm .gt_from_md > :first-child {
   margin-top: 0;
 }
-&#10;#kpfmbapqti .gt_from_md > :last-child {
+&#10;#exavhrnugm .gt_from_md > :last-child {
   margin-bottom: 0;
 }
-&#10;#kpfmbapqti .gt_row {
+&#10;#exavhrnugm .gt_row {
   padding-top: 4px;
   padding-bottom: 4px;
   padding-left: 5px;
@@ -225,7 +225,7 @@ rank_table_gt
   vertical-align: middle;
   overflow-x: hidden;
 }
-&#10;#kpfmbapqti .gt_stub {
+&#10;#exavhrnugm .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -237,7 +237,7 @@ rank_table_gt
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#kpfmbapqti .gt_stub_row_group {
+&#10;#exavhrnugm .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -250,13 +250,13 @@ rank_table_gt
   padding-right: 5px;
   vertical-align: top;
 }
-&#10;#kpfmbapqti .gt_row_group_first td {
+&#10;#exavhrnugm .gt_row_group_first td {
   border-top-width: 2px;
 }
-&#10;#kpfmbapqti .gt_row_group_first th {
+&#10;#exavhrnugm .gt_row_group_first th {
   border-top-width: 2px;
 }
-&#10;#kpfmbapqti .gt_summary_row {
+&#10;#exavhrnugm .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -265,14 +265,14 @@ rank_table_gt
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#kpfmbapqti .gt_first_summary_row {
+&#10;#exavhrnugm .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
-&#10;#kpfmbapqti .gt_first_summary_row.thick {
+&#10;#exavhrnugm .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
-&#10;#kpfmbapqti .gt_last_summary_row {
+&#10;#exavhrnugm .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -281,7 +281,7 @@ rank_table_gt
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
-&#10;#kpfmbapqti .gt_grand_summary_row {
+&#10;#exavhrnugm .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -290,7 +290,7 @@ rank_table_gt
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#kpfmbapqti .gt_first_grand_summary_row {
+&#10;#exavhrnugm .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -299,7 +299,7 @@ rank_table_gt
   border-top-width: 6px;
   border-top-color: #D3D3D3;
 }
-&#10;#kpfmbapqti .gt_last_grand_summary_row_top {
+&#10;#exavhrnugm .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -308,10 +308,10 @@ rank_table_gt
   border-bottom-width: 6px;
   border-bottom-color: #D3D3D3;
 }
-&#10;#kpfmbapqti .gt_striped {
+&#10;#exavhrnugm .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
-&#10;#kpfmbapqti .gt_table_body {
+&#10;#exavhrnugm .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -319,7 +319,7 @@ rank_table_gt
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
-&#10;#kpfmbapqti .gt_footnotes {
+&#10;#exavhrnugm .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -332,7 +332,7 @@ rank_table_gt
   border-right-width: 2px;
   border-right-color: #D3D3D3;
 }
-&#10;#kpfmbapqti .gt_footnote {
+&#10;#exavhrnugm .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -340,7 +340,7 @@ rank_table_gt
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#kpfmbapqti .gt_sourcenotes {
+&#10;#exavhrnugm .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -353,64 +353,64 @@ rank_table_gt
   border-right-width: 2px;
   border-right-color: #D3D3D3;
 }
-&#10;#kpfmbapqti .gt_sourcenote {
+&#10;#exavhrnugm .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#kpfmbapqti .gt_left {
+&#10;#exavhrnugm .gt_left {
   text-align: left;
 }
-&#10;#kpfmbapqti .gt_center {
+&#10;#exavhrnugm .gt_center {
   text-align: center;
 }
-&#10;#kpfmbapqti .gt_right {
+&#10;#exavhrnugm .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
-&#10;#kpfmbapqti .gt_font_normal {
+&#10;#exavhrnugm .gt_font_normal {
   font-weight: normal;
 }
-&#10;#kpfmbapqti .gt_font_bold {
+&#10;#exavhrnugm .gt_font_bold {
   font-weight: bold;
 }
-&#10;#kpfmbapqti .gt_font_italic {
+&#10;#exavhrnugm .gt_font_italic {
   font-style: italic;
 }
-&#10;#kpfmbapqti .gt_super {
+&#10;#exavhrnugm .gt_super {
   font-size: 65%;
 }
-&#10;#kpfmbapqti .gt_footnote_marks {
+&#10;#exavhrnugm .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
-&#10;#kpfmbapqti .gt_asterisk {
+&#10;#exavhrnugm .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
-&#10;#kpfmbapqti .gt_indent_1 {
+&#10;#exavhrnugm .gt_indent_1 {
   text-indent: 5px;
 }
-&#10;#kpfmbapqti .gt_indent_2 {
+&#10;#exavhrnugm .gt_indent_2 {
   text-indent: 10px;
 }
-&#10;#kpfmbapqti .gt_indent_3 {
+&#10;#exavhrnugm .gt_indent_3 {
   text-indent: 15px;
 }
-&#10;#kpfmbapqti .gt_indent_4 {
+&#10;#exavhrnugm .gt_indent_4 {
   text-indent: 20px;
 }
-&#10;#kpfmbapqti .gt_indent_5 {
+&#10;#exavhrnugm .gt_indent_5 {
   text-indent: 25px;
 }
-&#10;#kpfmbapqti .katex-display {
+&#10;#exavhrnugm .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
-&#10;#kpfmbapqti div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+&#10;#exavhrnugm div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -639,20 +639,20 @@ rank_table_gt
 wk11_matchups_gt
 ```
 
-<div id="lxvfmlaljl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#lxvfmlaljl table {
+<div id="loykaqyouw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#loykaqyouw table {
   font-family: Helvetica;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-&#10;#lxvfmlaljl thead, #lxvfmlaljl tbody, #lxvfmlaljl tfoot, #lxvfmlaljl tr, #lxvfmlaljl td, #lxvfmlaljl th {
+&#10;#loykaqyouw thead, #loykaqyouw tbody, #loykaqyouw tfoot, #loykaqyouw tr, #loykaqyouw td, #loykaqyouw th {
   border-style: none;
 }
-&#10;#lxvfmlaljl p {
+&#10;#loykaqyouw p {
   margin: 0;
   padding: 0;
 }
-&#10;#lxvfmlaljl .gt_table {
+&#10;#loykaqyouw .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -663,7 +663,7 @@ wk11_matchups_gt
   font-weight: normal;
   font-style: normal;
   background-color: #FFFFFF;
-  width: auto;
+  width: 100%;
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #A8A8A8;
@@ -677,11 +677,11 @@ wk11_matchups_gt
   border-left-width: 2px;
   border-left-color: #D3D3D3;
 }
-&#10;#lxvfmlaljl .gt_caption {
+&#10;#loykaqyouw .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
-&#10;#lxvfmlaljl .gt_title {
+&#10;#loykaqyouw .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -692,7 +692,7 @@ wk11_matchups_gt
   border-bottom-color: #FFFFFF;
   border-bottom-width: 0;
 }
-&#10;#lxvfmlaljl .gt_subtitle {
+&#10;#loykaqyouw .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -703,7 +703,7 @@ wk11_matchups_gt
   border-top-color: #FFFFFF;
   border-top-width: 0;
 }
-&#10;#lxvfmlaljl .gt_heading {
+&#10;#loykaqyouw .gt_heading {
   background-color: #FFFFFF;
   text-align: left;
   border-bottom-color: #FFFFFF;
@@ -714,12 +714,12 @@ wk11_matchups_gt
   border-right-width: 1px;
   border-right-color: #D3D3D3;
 }
-&#10;#lxvfmlaljl .gt_bottom_border {
+&#10;#loykaqyouw .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
-&#10;#lxvfmlaljl .gt_col_headings {
+&#10;#loykaqyouw .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -733,10 +733,10 @@ wk11_matchups_gt
   border-right-width: 1px;
   border-right-color: #D3D3D3;
 }
-&#10;#lxvfmlaljl .gt_col_heading {
+&#10;#loykaqyouw .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
-  font-size: 100%;
+  font-size: 14px;
   font-weight: normal;
   text-transform: inherit;
   border-left-style: none;
@@ -752,10 +752,10 @@ wk11_matchups_gt
   padding-right: 5px;
   overflow-x: hidden;
 }
-&#10;#lxvfmlaljl .gt_column_spanner_outer {
+&#10;#loykaqyouw .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
-  font-size: 100%;
+  font-size: 14px;
   font-weight: normal;
   text-transform: inherit;
   padding-top: 0;
@@ -763,13 +763,13 @@ wk11_matchups_gt
   padding-left: 4px;
   padding-right: 4px;
 }
-&#10;#lxvfmlaljl .gt_column_spanner_outer:first-child {
+&#10;#loykaqyouw .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
-&#10;#lxvfmlaljl .gt_column_spanner_outer:last-child {
+&#10;#loykaqyouw .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
-&#10;#lxvfmlaljl .gt_column_spanner {
+&#10;#loykaqyouw .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -780,10 +780,10 @@ wk11_matchups_gt
   display: inline-block;
   width: 100%;
 }
-&#10;#lxvfmlaljl .gt_spanner_row {
+&#10;#loykaqyouw .gt_spanner_row {
   border-bottom-style: hidden;
 }
-&#10;#lxvfmlaljl .gt_group_heading {
+&#10;#loykaqyouw .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -808,7 +808,7 @@ wk11_matchups_gt
   vertical-align: middle;
   text-align: left;
 }
-&#10;#lxvfmlaljl .gt_empty_group_heading {
+&#10;#loykaqyouw .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -822,15 +822,15 @@ wk11_matchups_gt
   border-bottom-color: #D3D3D3;
   vertical-align: middle;
 }
-&#10;#lxvfmlaljl .gt_from_md > :first-child {
+&#10;#loykaqyouw .gt_from_md > :first-child {
   margin-top: 0;
 }
-&#10;#lxvfmlaljl .gt_from_md > :last-child {
+&#10;#loykaqyouw .gt_from_md > :last-child {
   margin-bottom: 0;
 }
-&#10;#lxvfmlaljl .gt_row {
-  padding-top: 4px;
-  padding-bottom: 4px;
+&#10;#loykaqyouw .gt_row {
+  padding-top: 6px;
+  padding-bottom: 6px;
   padding-left: 5px;
   padding-right: 5px;
   margin: 10px;
@@ -846,7 +846,7 @@ wk11_matchups_gt
   vertical-align: middle;
   overflow-x: hidden;
 }
-&#10;#lxvfmlaljl .gt_stub {
+&#10;#loykaqyouw .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -858,7 +858,7 @@ wk11_matchups_gt
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#lxvfmlaljl .gt_stub_row_group {
+&#10;#loykaqyouw .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -871,13 +871,13 @@ wk11_matchups_gt
   padding-right: 5px;
   vertical-align: top;
 }
-&#10;#lxvfmlaljl .gt_row_group_first td {
+&#10;#loykaqyouw .gt_row_group_first td {
   border-top-width: 2px;
 }
-&#10;#lxvfmlaljl .gt_row_group_first th {
+&#10;#loykaqyouw .gt_row_group_first th {
   border-top-width: 2px;
 }
-&#10;#lxvfmlaljl .gt_summary_row {
+&#10;#loykaqyouw .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -886,14 +886,14 @@ wk11_matchups_gt
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#lxvfmlaljl .gt_first_summary_row {
+&#10;#loykaqyouw .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
-&#10;#lxvfmlaljl .gt_first_summary_row.thick {
+&#10;#loykaqyouw .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
-&#10;#lxvfmlaljl .gt_last_summary_row {
+&#10;#loykaqyouw .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -902,7 +902,7 @@ wk11_matchups_gt
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
-&#10;#lxvfmlaljl .gt_grand_summary_row {
+&#10;#loykaqyouw .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -911,7 +911,7 @@ wk11_matchups_gt
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#lxvfmlaljl .gt_first_grand_summary_row {
+&#10;#loykaqyouw .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -920,7 +920,7 @@ wk11_matchups_gt
   border-top-width: 6px;
   border-top-color: #D3D3D3;
 }
-&#10;#lxvfmlaljl .gt_last_grand_summary_row_top {
+&#10;#loykaqyouw .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -929,10 +929,10 @@ wk11_matchups_gt
   border-bottom-width: 6px;
   border-bottom-color: #D3D3D3;
 }
-&#10;#lxvfmlaljl .gt_striped {
+&#10;#loykaqyouw .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
-&#10;#lxvfmlaljl .gt_table_body {
+&#10;#loykaqyouw .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -940,7 +940,7 @@ wk11_matchups_gt
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
-&#10;#lxvfmlaljl .gt_footnotes {
+&#10;#loykaqyouw .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -953,7 +953,7 @@ wk11_matchups_gt
   border-right-width: 2px;
   border-right-color: #D3D3D3;
 }
-&#10;#lxvfmlaljl .gt_footnote {
+&#10;#loykaqyouw .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -961,7 +961,7 @@ wk11_matchups_gt
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#lxvfmlaljl .gt_sourcenotes {
+&#10;#loykaqyouw .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -974,64 +974,64 @@ wk11_matchups_gt
   border-right-width: 2px;
   border-right-color: #D3D3D3;
 }
-&#10;#lxvfmlaljl .gt_sourcenote {
+&#10;#loykaqyouw .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#lxvfmlaljl .gt_left {
+&#10;#loykaqyouw .gt_left {
   text-align: left;
 }
-&#10;#lxvfmlaljl .gt_center {
+&#10;#loykaqyouw .gt_center {
   text-align: center;
 }
-&#10;#lxvfmlaljl .gt_right {
+&#10;#loykaqyouw .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
-&#10;#lxvfmlaljl .gt_font_normal {
+&#10;#loykaqyouw .gt_font_normal {
   font-weight: normal;
 }
-&#10;#lxvfmlaljl .gt_font_bold {
+&#10;#loykaqyouw .gt_font_bold {
   font-weight: bold;
 }
-&#10;#lxvfmlaljl .gt_font_italic {
+&#10;#loykaqyouw .gt_font_italic {
   font-style: italic;
 }
-&#10;#lxvfmlaljl .gt_super {
+&#10;#loykaqyouw .gt_super {
   font-size: 65%;
 }
-&#10;#lxvfmlaljl .gt_footnote_marks {
+&#10;#loykaqyouw .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
-&#10;#lxvfmlaljl .gt_asterisk {
+&#10;#loykaqyouw .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
-&#10;#lxvfmlaljl .gt_indent_1 {
+&#10;#loykaqyouw .gt_indent_1 {
   text-indent: 5px;
 }
-&#10;#lxvfmlaljl .gt_indent_2 {
+&#10;#loykaqyouw .gt_indent_2 {
   text-indent: 10px;
 }
-&#10;#lxvfmlaljl .gt_indent_3 {
+&#10;#loykaqyouw .gt_indent_3 {
   text-indent: 15px;
 }
-&#10;#lxvfmlaljl .gt_indent_4 {
+&#10;#loykaqyouw .gt_indent_4 {
   text-indent: 20px;
 }
-&#10;#lxvfmlaljl .gt_indent_5 {
+&#10;#loykaqyouw .gt_indent_5 {
   text-indent: 25px;
 }
-&#10;#lxvfmlaljl .katex-display {
+&#10;#loykaqyouw .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
-&#10;#lxvfmlaljl div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+&#10;#loykaqyouw div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1055,121 +1055,129 @@ wk11_matchups_gt
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/52.png" style="height:30px;"></td>
+    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/52.png" style="height:35px;"></td>
 <td headers="away_team" class="gt_row gt_left">Florida State</td>
-<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/152.png" style="height:30px;"></td>
+<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/152.png" style="height:35px;"></td>
 <td headers="home_team" class="gt_row gt_left">NC State</td>
 <td headers="away_rating" class="gt_row gt_right">75.76</td>
 <td headers="home_rating" class="gt_row gt_right">62.26</td>
 <td headers="rating_diff_neutral" class="gt_row gt_right">13.50</td>
 <td headers="proj_margin_away" class="gt_row gt_right">10.50</td></tr>
-    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2390.png" style="height:30px;"></td>
+    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2390.png" style="height:35px;"></td>
 <td headers="away_team" class="gt_row gt_left">Miami</td>
-<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/259.png" style="height:30px;"></td>
+<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/259.png" style="height:35px;"></td>
 <td headers="home_team" class="gt_row gt_left">Virginia Tech</td>
 <td headers="away_rating" class="gt_row gt_right">81.77</td>
 <td headers="home_rating" class="gt_row gt_right">55.59</td>
 <td headers="rating_diff_neutral" class="gt_row gt_right">26.19</td>
 <td headers="proj_margin_away" class="gt_row gt_right">23.19</td></tr>
-    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2535.png" style="height:30px;"></td>
+    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2535.png" style="height:35px;"></td>
 <td headers="away_team" class="gt_row gt_left">Samford</td>
-<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/245.png" style="height:30px;"></td>
+<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/245.png" style="height:35px;"></td>
 <td headers="home_team" class="gt_row gt_left">Texas A&amp;M</td>
 <td headers="away_rating" class="gt_row gt_right">10.81</td>
 <td headers="home_rating" class="gt_row gt_right">81.95</td>
 <td headers="rating_diff_neutral" class="gt_row gt_right">−71.14</td>
 <td headers="proj_margin_away" class="gt_row gt_right">−74.14</td></tr>
-    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/164.png" style="height:30px;"></td>
+    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/164.png" style="height:35px;"></td>
 <td headers="away_team" class="gt_row gt_left">Rutgers</td>
-<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/194.png" style="height:30px;"></td>
+<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/194.png" style="height:35px;"></td>
 <td headers="home_team" class="gt_row gt_left">Ohio State</td>
 <td headers="away_rating" class="gt_row gt_right">60.55</td>
 <td headers="home_rating" class="gt_row gt_right">90.49</td>
 <td headers="rating_diff_neutral" class="gt_row gt_right">−29.94</td>
 <td headers="proj_margin_away" class="gt_row gt_right">−32.94</td></tr>
-    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/142.png" style="height:30px;"></td>
+    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/142.png" style="height:35px;"></td>
 <td headers="away_team" class="gt_row gt_left">Missouri</td>
-<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/201.png" style="height:30px;"></td>
+<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/201.png" style="height:35px;"></td>
 <td headers="home_team" class="gt_row gt_left">Oklahoma</td>
 <td headers="away_rating" class="gt_row gt_right">75.27</td>
 <td headers="home_rating" class="gt_row gt_right">78.82</td>
 <td headers="rating_diff_neutral" class="gt_row gt_right">−3.54</td>
 <td headers="proj_margin_away" class="gt_row gt_right">−6.54</td></tr>
-    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2429.png" style="height:30px;"></td>
+    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2429.png" style="height:35px;"></td>
 <td headers="away_team" class="gt_row gt_left">Charlotte</td>
-<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/61.png" style="height:30px;"></td>
+<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/61.png" style="height:35px;"></td>
 <td headers="home_team" class="gt_row gt_left">Georgia</td>
 <td headers="away_rating" class="gt_row gt_right">33.47</td>
 <td headers="home_rating" class="gt_row gt_right">82.41</td>
 <td headers="rating_diff_neutral" class="gt_row gt_right">−48.94</td>
 <td headers="proj_margin_away" class="gt_row gt_right">−51.94</td></tr>
-    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2197.png" style="height:30px;"></td>
+    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2197.png" style="height:35px;"></td>
 <td headers="away_team" class="gt_row gt_left">Eastern Illinois</td>
-<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/333.png" style="height:30px;"></td>
+<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/333.png" style="height:35px;"></td>
 <td headers="home_team" class="gt_row gt_left">Alabama</td>
 <td headers="away_rating" class="gt_row gt_right">17.36</td>
 <td headers="home_rating" class="gt_row gt_right">83.76</td>
 <td headers="rating_diff_neutral" class="gt_row gt_right">−66.41</td>
 <td headers="proj_margin_away" class="gt_row gt_right">−69.41</td></tr>
-    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/30.png" style="height:30px;"></td>
+    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/30.png" style="height:35px;"></td>
 <td headers="away_team" class="gt_row gt_left">USC</td>
-<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2483.png" style="height:30px;"></td>
+<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2483.png" style="height:35px;"></td>
 <td headers="home_team" class="gt_row gt_left">Oregon</td>
 <td headers="away_rating" class="gt_row gt_right">81.81</td>
 <td headers="home_rating" class="gt_row gt_right">88.99</td>
 <td headers="rating_diff_neutral" class="gt_row gt_right">−7.19</td>
 <td headers="proj_margin_away" class="gt_row gt_right">−10.19</td></tr>
-    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/96.png" style="height:30px;"></td>
+    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/96.png" style="height:35px;"></td>
 <td headers="away_team" class="gt_row gt_left">Kentucky</td>
-<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/238.png" style="height:30px;"></td>
+<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/238.png" style="height:35px;"></td>
 <td headers="home_team" class="gt_row gt_left">Vanderbilt</td>
 <td headers="away_rating" class="gt_row gt_right">69.16</td>
 <td headers="home_rating" class="gt_row gt_right">77.42</td>
 <td headers="rating_diff_neutral" class="gt_row gt_right">−8.27</td>
 <td headers="proj_margin_away" class="gt_row gt_right">−11.27</td></tr>
-    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/127.png" style="height:30px;"></td>
+    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/127.png" style="height:35px;"></td>
 <td headers="away_team" class="gt_row gt_left">Michigan State</td>
-<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2294.png" style="height:30px;"></td>
+<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2294.png" style="height:35px;"></td>
 <td headers="home_team" class="gt_row gt_left">Iowa</td>
 <td headers="away_rating" class="gt_row gt_right">58.72</td>
 <td headers="home_rating" class="gt_row gt_right">76.10</td>
 <td headers="rating_diff_neutral" class="gt_row gt_right">−17.38</td>
 <td headers="proj_margin_away" class="gt_row gt_right">−20.38</td></tr>
-    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/183.png" style="height:30px;"></td>
+    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/183.png" style="height:35px;"></td>
 <td headers="away_team" class="gt_row gt_left">Syracuse</td>
-<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/87.png" style="height:30px;"></td>
+<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/87.png" style="height:35px;"></td>
 <td headers="home_team" class="gt_row gt_left">Notre Dame</td>
 <td headers="away_rating" class="gt_row gt_right">52.81</td>
 <td headers="home_rating" class="gt_row gt_right">87.09</td>
 <td headers="rating_diff_neutral" class="gt_row gt_right">−34.28</td>
 <td headers="proj_margin_away" class="gt_row gt_right">−37.28</td></tr>
-    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2306.png" style="height:30px;"></td>
+    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/130.png" style="height:35px;"></td>
+<td headers="away_team" class="gt_row gt_left">Michigan</td>
+<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/120.png" style="height:35px;"></td>
+<td headers="home_team" class="gt_row gt_left">Maryland</td>
+<td headers="away_rating" class="gt_row gt_right">75.27</td>
+<td headers="home_rating" class="gt_row gt_right">60.83</td>
+<td headers="rating_diff_neutral" class="gt_row gt_right">14.44</td>
+<td headers="proj_margin_away" class="gt_row gt_right">11.44</td></tr>
+    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2306.png" style="height:35px;"></td>
 <td headers="away_team" class="gt_row gt_left">Kansas State</td>
-<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/254.png" style="height:30px;"></td>
+<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/254.png" style="height:35px;"></td>
 <td headers="home_team" class="gt_row gt_left">Utah</td>
 <td headers="away_rating" class="gt_row gt_right">64.62</td>
 <td headers="home_rating" class="gt_row gt_right">86.81</td>
 <td headers="rating_diff_neutral" class="gt_row gt_right">−22.19</td>
 <td headers="proj_margin_away" class="gt_row gt_right">−25.19</td></tr>
-    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2633.png" style="height:30px;"></td>
+    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2633.png" style="height:35px;"></td>
 <td headers="away_team" class="gt_row gt_left">Tennessee</td>
-<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/57.png" style="height:30px;"></td>
+<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/57.png" style="height:35px;"></td>
 <td headers="home_team" class="gt_row gt_left">Florida</td>
 <td headers="away_rating" class="gt_row gt_right">75.92</td>
 <td headers="home_rating" class="gt_row gt_right">67.09</td>
 <td headers="rating_diff_neutral" class="gt_row gt_right">8.83</td>
 <td headers="proj_margin_away" class="gt_row gt_right">5.83</td></tr>
-    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/252.png" style="height:30px;"></td>
+    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/252.png" style="height:35px;"></td>
 <td headers="away_team" class="gt_row gt_left">BYU</td>
-<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2132.png" style="height:30px;"></td>
+<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/2132.png" style="height:35px;"></td>
 <td headers="home_team" class="gt_row gt_left">Cincinnati</td>
 <td headers="away_rating" class="gt_row gt_right">78.66</td>
 <td headers="home_rating" class="gt_row gt_right">67.99</td>
 <td headers="rating_diff_neutral" class="gt_row gt_right">10.67</td>
 <td headers="proj_margin_away" class="gt_row gt_right">7.67</td></tr>
-    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/264.png" style="height:30px;"></td>
+    <tr><td headers="away_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/264.png" style="height:35px;"></td>
 <td headers="away_team" class="gt_row gt_left">Washington</td>
-<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/26.png" style="height:30px;"></td>
+<td headers="home_logo" class="gt_row gt_left"><img src="http://a.espncdn.com/i/teamlogos/ncaa/500/26.png" style="height:35px;"></td>
 <td headers="home_team" class="gt_row gt_left">UCLA</td>
 <td headers="away_rating" class="gt_row gt_right">77.83</td>
 <td headers="home_rating" class="gt_row gt_right">58.00</td>
