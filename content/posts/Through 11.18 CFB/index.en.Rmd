@@ -374,17 +374,17 @@ Write interpretation here...
 
 
 
-```{r}
+```{r, echo=FALSE}
 # Displaying graph code
 plot1
 ```
 
-```{r}
+```{r,echo=FALSE}
 # Printing table code
 rank_table_gt
 ```
 
-```{r}
+```{r,echo=FALSE}
 # Printing table code
 wk11_matchups_gt
 ```
