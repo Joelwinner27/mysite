@@ -176,7 +176,7 @@ rank_table_gt <- rank_table %>%
 ```{r,include=FALSE}
 top20 <- ratings_with_sos %>%
   arrange(desc(rating)) %>%
-  slice(1:20)
+  slice(1:21)
 
 plot1 <- ggplot(top20, aes(x = rating, y = SoS)) +
   geom_cfb_logos(aes(team = team), width = 0.057) +
