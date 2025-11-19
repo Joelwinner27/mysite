@@ -1,0 +1,384 @@
+---
+title: "CFB through 11.18"
+author: "Joel Winner"
+date: 2025-06-04T00:00:00-05:00
+categories: ["CFB"]
+tags: ["2025-26 Season"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(cfbfastR)
+library(tidyverse)
+library(cfbplotR)
+```
+```{r,include=FALSE}
+Sys.setenv(CFBD_API_KEY = "lQbW5MpnCOig4bXB5ENTaDcA+d05LQVbejlWnUyBnfmM2TInqsv8CxfzBe8Xz2wg")
+```
+
+
+```{r, include=FALSE}
+df <- cfbd_game_info(
+  year        = 2025,
+  season_type = "regular",
+  division    = "fbs"
+)
+```
+
+```{r,include=FALSE}
+games <- df %>%
+  filter(!is.na(home_points), !is.na(away_points)) %>%  # keep only finished games
+  select(
+    home  = home_team,
+    away  = away_team,
+    home_score = home_points,
+    away_score = away_points
+  )
+```
+
+```{r,include=FALSE}
+massey_ratings <- function(games,
+                           home_col = "home",
+                           away_col = "away",
+                           home_score_col = "home_score",
+                           away_score_col = "away_score",
+                           lambda = 1e-6) {   # tiny regularization
+  home  <- games[[home_col]]
+  away  <- games[[away_col]]
+  h_pts <- games[[home_score_col]]
+  a_pts <- games[[away_score_col]]
+  
+  teams <- sort(unique(c(home, away)))
+  n_teams <- length(teams)
+  team_index <- setNames(seq_len(n_teams), teams)
+  
+  M <- matrix(0, nrow = n_teams, ncol = n_teams)
+  p <- numeric(n_teams)
+  
+  for (k in seq_along(home)) {
+    i <- team_index[ home[k] ]
+    j <- team_index[ away[k] ]
+    
+    # Diagonals: games played
+    M[i, i] <- M[i, i] + 1
+    M[j, j] <- M[j, j] + 1
+    
+    # Off-diagonals: minus number of meetings
+    M[i, j] <- M[i, j] - 1
+    M[j, i] <- M[j, i] - 1
+    
+    # Margin (home team)
+    margin <- (h_pts[k] - a_pts[k])
+    p[i] <- p[i] + margin
+    p[j] <- p[j] - margin
+  }
+  
+  # Anchor: sum of ratings = 0
+  M[n_teams, ] <- 1
+  p[n_teams]   <- 0
+  
+  # Regularization to avoid numerical singularity
+  M_reg <- M + diag(lambda, n_teams)
+  
+  # Use QR solve (more stable)
+  r <- qr.solve(M_reg, p)
+  
+  ratings <- data.frame(
+    team   = teams,
+    rating = as.numeric(r),
+    stringsAsFactors = FALSE
+  )
+  
+  ratings[order(-ratings$rating), ]
+}
+
+
+# ratings_2025 has: team, rating
+# games has: home, away
+
+
+opponents <- games %>%
+  select(home, away) %>%
+  mutate(
+    team = home,
+    opponent = away
+  ) %>%
+  select(team, opponent) %>%
+  bind_rows(
+    games %>%
+      mutate(
+        team = away,
+        opponent = home
+      ) %>%
+      select(team, opponent)
+  )
+
+
+
+```
+
+```{r,include=FALSE}
+ratings_2025 <- massey_ratings(games)
+
+sos <- opponents %>%
+  left_join(ratings_2025, by = c("opponent" = "team")) %>%
+  group_by(team) %>%
+  summarize(
+    SoS = mean(rating, na.rm = TRUE)
+  ) %>%
+  arrange(desc(SoS))
+
+ratings_with_sos <- ratings_2025 %>%
+  left_join(sos, by = "team")
+
+```
+
+```{r,include=FALSE}
+library(dplyr)
+library(gt)
+library(cfbplotR)
+
+rank_table <- ratings_with_sos %>%
+  arrange(desc(rating)) %>%
+  mutate(
+    rank = row_number(),
+    logo = team  # logo column must contain valid team names
+  ) %>%
+  slice(1:40) %>%             # <-- keep only top 40
+  select(rank, logo, team, rating, SoS)
+
+rank_table_gt <- rank_table %>%
+  gt() %>%
+  gt_fmt_cfb_logo(columns = logo) %>%   # or gt_fmt_cfb(columns = logo) depending on version
+  fmt_number(columns = c(rating, SoS), decimals = 2) %>%
+  cols_label(
+    rank   = "Rank",
+    logo   = "",
+    team   = "Team",
+    rating = "Rating",
+    SoS    = "Strength of Schedule"
+  ) %>%
+  tab_header(
+    title    = md("**Massey Ratings – FBS 2025 (Top 40)**"),
+    subtitle = "Based on least squares solution to a system of equations"
+  ) %>%
+  tab_options(
+    table.font.names   = "Helvetica",
+    data_row.padding   = px(4),
+    heading.align      = "left"
+  )
+
+#rank_table_gt
+
+
+```
+
+```{r,include=FALSE}
+top20 <- ratings_with_sos %>%
+  arrange(desc(rating)) %>%
+  slice(1:20)
+
+plot1 <- ggplot(top20, aes(x = rating, y = SoS)) +
+  geom_cfb_logos(aes(team = team), width = 0.057) +
+  labs(
+    x = "Rating",
+    y = "Strength of Schedule",
+    title = "Top 20 Rated Teams",
+    subtitle = "Through 11/18"
+  ) +
+  theme_minimal()
+```
+
+```{r,include=FALSE}
+wk11 <- cfbd_game_info(year = 2025, week = 13)
+wk11_top20_games <- wk11 %>%
+  filter(home_team %in% top20$team | away_team %in% top20$team)
+massey <- ratings_with_sos %>%
+  select(team, rating)
+
+wk11_proj_games <- wk11_top20_games %>%
+  # join home & away ratings
+  left_join(massey %>% rename(home_rating = rating),
+            by = c("home_team" = "team")) %>%
+  left_join(massey %>% rename(away_rating = rating),
+            by = c("away_team" = "team")) %>%
+  mutate(
+    rating_diff_neutral = home_rating - away_rating,  # neutral field
+    proj_margin_home = case_when(
+      neutral_site ~ rating_diff_neutral,             # neutral: no HFA
+      TRUE        ~ rating_diff_neutral + 3           # home gets +3
+    ),
+    proj_favorite = ifelse(proj_margin_home > 0, home_team, away_team),
+    proj_spread   = abs(proj_margin_home)
+  )
+
+wk11_top20_long <- bind_rows(
+  wk11_proj_games %>%
+    transmute(
+      team        = home_team,
+      opponent    = away_team,
+      week,
+      start_date,
+      neutral_site,
+      home_away   = "home",
+      team_rating = home_rating,
+      opp_rating  = away_rating
+    ),
+  wk11_proj_games %>%
+    transmute(
+      team        = away_team,
+      opponent    = home_team,
+      week,
+      start_date,
+      neutral_site,
+      home_away   = "away",
+      team_rating = away_rating,
+      opp_rating  = home_rating
+    )
+) %>%
+  # keep only the top-20 teams
+  filter(team %in% top20$team) %>%
+  mutate(
+    rating_diff_neutral = team_rating - opp_rating,
+    proj_margin = case_when(
+      neutral_site ~ rating_diff_neutral,
+      home_away == "home" ~ rating_diff_neutral + 3,
+      home_away == "away" ~ rating_diff_neutral - 3
+    )
+  ) %>%
+  arrange(start_date, desc(team_rating))
+
+```
+
+```{r,include=FALSE}
+wk11_matchups <- wk11_proj_games %>%
+  transmute(
+    date         = as.Date(substr(start_date, 1, 10)),
+    away_team    = away_team,
+    home_team    = home_team,
+    neutral_site = neutral_site,
+    away_rating  = away_rating,
+    home_rating  = home_rating,
+    proj_margin_away = case_when(
+      neutral_site ~ (away_rating - home_rating),   # neutral
+      TRUE        ~ (away_rating - home_rating) - 3 # away loses HFA
+    )
+  )
+wk11_matchups_top20 <- wk11_matchups %>%
+  filter(away_team %in% top20$team | home_team %in% top20$team)
+library(gt)
+library(cfbplotR)
+
+wk11_matchups_gt <- wk11_matchups_top20 %>%
+  mutate(
+    away_logo = away_team,
+    home_logo = home_team
+  ) %>%
+  select(
+    date,
+    away_logo,
+    away_team,
+    home_logo,
+    home_team,
+    neutral_site,
+    away_rating,
+    home_rating,
+    proj_margin_away
+  ) %>%
+  gt() %>%
+  gt_fmt_cfb_logo(columns = c(away_logo, home_logo)) %>% 
+  fmt_date(columns = date, date_style = 3) %>%
+  fmt_number(columns = c(away_rating, home_rating, proj_margin_away), decimals = 2) %>%
+  cols_label(
+    date            = "Date",
+    away_logo       = "",
+    away_team       = "Away",
+    home_logo       = "",
+    home_team       = "Home",
+    neutral_site    = "Neutral",
+    away_rating     = "Away Rating",
+    home_rating     = "Home Rating",
+    proj_margin_away = "Projected Margin (Away)"
+  ) %>%
+  tab_header(
+    title = md("**Week 11 Matchups – Away Team Always Listed First**"),
+    subtitle = "Massey-based projected point differential"
+  ) %>%
+  tab_options(
+    table.font.names = "Helvetica",
+    data_row.padding = px(4),
+    heading.align = "left"
+  )
+
+```
+```{r,include=FALSE}
+# Start from wk11_matchups_top20 which already has
+# away_team, home_team, away_rating, home_rating, proj_margin_away, neutral_site
+
+wk11_matchups_top202 <- wk11_matchups_top20 %>%
+  mutate(
+    away_logo = away_team,
+    home_logo = home_team,
+    rating_diff_neutral = away_rating - home_rating  # neutral-field spread (Away - Home)
+  )
+
+wk11_matchups_gt <- wk11_matchups_top202 %>%
+  select(
+    away_logo,
+    away_team,
+    home_logo,
+    home_team,
+    away_rating,
+    home_rating,
+    rating_diff_neutral,
+    proj_margin_away
+  ) %>%
+  gt() %>%
+  gt_fmt_cfb_logo(columns = c(away_logo, home_logo), height = 35) %>%  # <-- bigger logos
+  fmt_number(
+    columns = c(away_rating, home_rating, rating_diff_neutral, proj_margin_away),
+    decimals = 2
+  ) %>%
+  cols_label(
+    away_logo          = "",
+    away_team          = "Away",
+    home_logo          = "",
+    home_team          = "Home",
+    away_rating        = "Away Rating",
+    home_rating        = "Home Rating",
+    rating_diff_neutral = "Margin (neutral field)",
+    proj_margin_away   = "Margin (lazy home field adv)"
+  ) %>%
+  tab_header(
+    title    = md("**Week 11 Matchups (top 20 teams)**"),
+    subtitle = "Projected spreads"
+  ) %>%
+  tab_options(
+    table.font.names = "Helvetica",
+    data_row.padding = px(6),         # <-- increase padding
+    column_labels.font.size = "14px",
+    table.width = "100%",             # <-- stop shrinking
+    heading.align = "left"
+  )
+
+
+#wk11_matchups_gt
+
+```
+
+Write interpretation here...
+
+
+
+```{r}
+plot1
+```
+
+```{r}
+rank_table_gt
+```
+
+```{r}
+wk11_matchups_gt
+```
+
