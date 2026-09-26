@@ -1,6 +1,6 @@
 ---
-title: "MLB park factors analysis"
-author: "Joel Winner.127"
+title: "MLB Park Factors Analysis"
+author: "Joel Winner"
 date: "2025-05-09"
 output: blogdown::html_page
 ---

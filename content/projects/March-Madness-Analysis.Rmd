@@ -1,6 +1,6 @@
 ---
-title: "March-Madness-Analysis"
-author: "Joel Winner.127"
+title: "March Madness Analysis"
+author: "Joel Winner"
 date: "2025-05-12"
 output: html_document
 ---

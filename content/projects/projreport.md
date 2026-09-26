@@ -1,6 +1,6 @@
 ---
 title: "Google Search Interest Time Series example"
-author: "Joel Winner.127"
+author: "Joel Winner"
 date: "2025-04-21"
 output: blogdown::html_page
 math: true

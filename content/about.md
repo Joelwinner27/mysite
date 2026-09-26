@@ -1,11 +1,7 @@
 ---
-aliases:
-- about-us
-- about-hugo
-- contact
 author: Joel Winner
 date: "2019-02-28"
-description: Test Website
+description: About Joel Winner, statistics graduate from Ohio State
 title: About Me
 ---
 

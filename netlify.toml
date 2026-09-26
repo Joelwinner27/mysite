@@ -15,3 +15,29 @@ command = 'hugo -F -b $DEPLOY_PRIME_URL'
 [context.production]
 [context.production.environment]
 HUGO_ENV = 'production'
+
+# Old addresses from before the cleanup
+[[redirects]]
+from = "/post/11.13-kenpom/*"
+to = "/posts/kenpom-11.13/"
+status = 301
+
+[[redirects]]
+from = "/post/*"
+to = "/posts/"
+status = 301
+
+[[redirects]]
+from = "/Joel-Resume-website%20.pdf"
+to = "/Joel-Resume.pdf"
+status = 301
+
+[[redirects]]
+from = "/about-us/*"
+to = "/about/"
+status = 301
+
+[[redirects]]
+from = "/about-hugo/*"
+to = "/about/"
+status = 301
