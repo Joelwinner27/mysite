@@ -1,0 +1,17 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+---
+<Base title="Page not found">
+  <section class="mx-auto flex max-w-5xl flex-col items-start px-6 pt-40 pb-24">
+    <p class="font-mono text-xs tracking-wider text-accent uppercase">Error 404 · No result</p>
+    <h1 class="hero-gradient mt-3 font-mono text-8xl font-medium">0–0</h1>
+    <p class="mt-6 max-w-[680px] text-lg text-dim">
+      This page doesn’t exist, or it moved when the site was rebuilt. The projects and posts are all still here.
+    </p>
+    <div class="mt-10 flex flex-wrap gap-4">
+      <a href="/" class="inline-flex items-center gap-2 rounded-lg bg-fg px-3 py-2 text-base font-semibold text-ink transition-transform duration-300 ease-base hover:scale-[1.03] active:scale-[0.98]">Back home</a>
+      <a href="/projects/" class="inline-flex items-center gap-2 rounded-lg border border-line-strong px-3 py-2 text-base font-semibold text-fg transition-colors duration-300 ease-base hover:bg-panel">Browse projects <Icon name="arrow-right" class="size-4" /></a>
+    </div>
+  </section>
+</Base>

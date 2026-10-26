@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+node_modules/
+dist/
+.astro/
+.netlify/

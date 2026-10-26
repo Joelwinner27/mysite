@@ -1,0 +1,18 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+
+const projects = (await getCollection("projects")).sort((a, b) => a.data.order - b.data.order);
+---
+<Base title="Projects" description="Sports analytics, forecasting and data visualization projects by Joel Winner.">
+  <PageHeader
+    eyebrow="Projects"
+    title="Things I’ve built"
+    intro="Sports analytics write ups, models and dashboards. Each one links to the full analysis and code."
+  />
+  <ul class="mx-auto grid max-w-5xl gap-4 px-6 sm:grid-cols-2 lg:grid-cols-3">
+    {projects.map((p) => <li data-reveal><ProjectCard project={p} /></li>)}
+  </ul>
+</Base>

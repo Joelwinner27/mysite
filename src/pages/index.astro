@@ -1,0 +1,135 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import PostRow from "../components/PostRow.astro";
+import { site } from "../data/site";
+
+const projects = (await getCollection("projects")).sort((a, b) => a.data.order - b.data.order);
+const featured = projects.filter((p) => p.data.featured);
+const posts = (await getCollection("posts")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const stats = [
+  { value: String(projects.length).padStart(2, "0"), label: "Projects" },
+  { value: "04", label: "Sports covered" },
+  { value: "R · Py · SQL", label: "Toolkit" },
+  { value: "OSU ’25", label: "B.S. Statistics" },
+];
+
+const tagline =
+  "I like the part nobody sees. The pipelines, the models and the checks that make a chart worth trusting.";
+---
+<Base>
+  <section class="mx-auto max-w-5xl px-6 pt-40 pb-16 sm:pt-48">
+    <p data-reveal class="mb-6 flex items-center gap-2 font-mono text-xs tracking-wider text-dim uppercase">
+      <span class="size-2 rounded-full bg-live"></span>
+      Joel Winner · Cincinnati, OH
+    </p>
+    <h1 data-reveal class="hero-gradient max-w-[680px] text-4xl font-semibold tracking-tight sm:text-5xl">
+      I build sports models<br class="hidden sm:block" /> and the data behind them
+    </h1>
+    <p data-reveal class="mt-6 max-w-[680px] text-lg text-dim">
+      I’m a financial analyst at Total Quality Logistics, where I build Fabric pipelines, semantic models and Power BI
+      reports. On my own time I pull sports data apart in R and Python.
+    </p>
+    <div data-reveal class="mt-10 flex flex-wrap items-center gap-4">
+      <a
+        href="/projects/"
+        class="inline-flex items-center gap-2 rounded-lg bg-fg px-3 py-2 text-base font-semibold text-ink transition-transform duration-300 ease-base hover:scale-[1.03] active:scale-[0.98]"
+      >
+        View projects <Icon name="arrow-right" class="size-4" />
+      </a>
+      <a
+        href={site.resume}
+        class="inline-flex items-center gap-2 rounded-lg border border-line-strong px-3 py-2 text-base font-semibold text-fg transition-colors duration-300 ease-base hover:bg-panel active:scale-[0.98]"
+      >
+        <Icon name="file-text" class="size-4" /> Resume
+      </a>
+      <div class="flex items-center gap-1 text-dim">
+        <a href={site.links.linkedin} aria-label="LinkedIn" class="rounded-lg p-2 transition-colors duration-300 ease-base hover:bg-panel hover:text-fg"><Icon name="linkedin-logo" /></a>
+        <a href={site.links.github} aria-label="GitHub" class="rounded-lg p-2 transition-colors duration-300 ease-base hover:bg-panel hover:text-fg"><Icon name="github-logo" /></a>
+        <a href={site.links.tableau} aria-label="Tableau Public" class="rounded-lg p-2 transition-colors duration-300 ease-base hover:bg-panel hover:text-fg"><Icon name="chart-bar" /></a>
+      </div>
+    </div>
+  </section>
+
+  <section data-reveal aria-label="At a glance" class="mx-auto max-w-5xl px-6">
+    <dl class="grid grid-cols-2 overflow-hidden rounded-2xl border border-line bg-panel sm:grid-cols-4">
+      {
+        stats.map((s, i) => (
+          <div class:list={["flex flex-col gap-1 p-6", i % 2 === 0 && "border-r border-line", i < 2 && "border-b border-line sm:border-b-0", i === 1 && "sm:border-r"]}>
+            <dt class="order-2 font-mono text-xs tracking-wider text-faint uppercase">{s.label}</dt>
+            <dd class="order-1 font-mono text-2xl font-medium text-fg">{s.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <section class="mx-auto max-w-5xl px-6 pt-24">
+    <div data-reveal class="mb-8 flex items-end justify-between gap-4">
+      <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">Featured projects</h2>
+      <a href="/projects/" class="inline-flex shrink-0 items-center gap-2 text-sm text-dim transition-colors duration-300 ease-base hover:text-fg">
+        All projects <Icon name="arrow-right" class="size-4" />
+      </a>
+    </div>
+    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {featured.map((p) => <li data-reveal><ProjectCard project={p} /></li>)}
+    </ul>
+  </section>
+
+  <section aria-label="Tagline" class="mx-auto max-w-5xl px-6 py-24 sm:py-40">
+    <p class="max-w-[680px] text-4xl font-semibold tracking-tight sm:text-5xl">
+      {tagline.split(" ").map((w) => <><span class="tagline-word">{w}</span>{" "}</>)}
+    </p>
+  </section>
+
+  <section class="mx-auto max-w-5xl px-6">
+    <div data-reveal class="mb-6 flex items-end justify-between gap-4">
+      <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">Latest from the blog</h2>
+      <a href="/posts/" class="inline-flex shrink-0 items-center gap-2 text-sm text-dim transition-colors duration-300 ease-base hover:text-fg">
+        All posts <Icon name="arrow-right" class="size-4" />
+      </a>
+    </div>
+    <div data-reveal class="border-t border-line">
+      {posts.slice(0, 3).map((p) => <PostRow post={p} />)}
+    </div>
+  </section>
+
+  <section id="about" class="mx-auto max-w-5xl scroll-mt-24 px-6 pt-24">
+    <div data-reveal class="grid gap-8 rounded-2xl border border-line bg-panel p-8 sm:grid-cols-[1fr_2fr] sm:p-12">
+      <div>
+        <p class="font-mono text-xs tracking-wider text-accent uppercase">About</p>
+        <h2 class="mt-3 text-3xl font-semibold tracking-tight">Joel Winner</h2>
+        <p class="mt-2 text-sm text-dim">B.S. Statistics, The Ohio State University, 2025</p>
+      </div>
+      <div class="flex flex-col gap-4 text-base text-dim">
+        <p>
+          I studied statistics at Ohio State and now work on the FP&A team at Total Quality Logistics in Cincinnati. Most
+          days I own reporting from the query to the dashboard: shaping data in Microsoft Fabric, building semantic
+          models, and keeping Power BI reports running for the people who use them.
+        </p>
+        <p>
+          Outside work I build projects that mix statistics and sports. Past ones dig into Major League Baseball, college
+          basketball and college football, and the newest one is a live line board that runs on a Raspberry Pi hooked up to an
+          old TV.
+        </p>
+        <div id="contact" class="mt-4 flex scroll-mt-24 flex-wrap gap-4">
+          <a
+            href={`mailto:${site.email}`}
+            class="inline-flex items-center gap-2 rounded-lg bg-fg px-3 py-2 text-base font-semibold text-ink transition-transform duration-300 ease-base hover:scale-[1.03] active:scale-[0.98]"
+          >
+            <Icon name="envelope-simple" class="size-4" /> Email me
+          </a>
+          <a
+            href={site.links.linkedin}
+            class="inline-flex items-center gap-2 rounded-lg border border-line-strong px-3 py-2 text-base font-semibold text-fg transition-colors duration-300 ease-base hover:bg-raised active:scale-[0.98]"
+          >
+            <Icon name="linkedin-logo" class="size-4" /> LinkedIn
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

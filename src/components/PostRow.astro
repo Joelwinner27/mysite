@@ -1,0 +1,19 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Icon from "./Icon.astro";
+import { formatDate } from "../data/site";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+}
+const { post } = Astro.props;
+---
+<a
+  href={`/posts/${post.id}/`}
+  class="group flex items-center gap-4 border-b border-line py-4 transition-colors duration-300 ease-base hover:bg-panel sm:px-4"
+>
+  <time datetime={post.data.date.toISOString()} class="w-24 shrink-0 font-mono text-xs text-faint">{formatDate(post.data.date)}</time>
+  <span class="flex-1 text-base text-fg">{post.data.title}</span>
+  <span class="hidden font-mono text-xs text-accent uppercase sm:inline">{post.data.tags[0]}</span>
+  <Icon name="arrow-right" class="size-4 text-faint transition-transform duration-300 ease-base group-hover:translate-x-1 group-hover:text-fg" />
+</a>

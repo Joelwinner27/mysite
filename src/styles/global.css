@@ -1,0 +1,140 @@
+@import "tailwindcss";
+@import "@fontsource/geist-sans/400.css";
+@import "@fontsource/geist-sans/500.css";
+@import "@fontsource/geist-sans/600.css";
+@import "@fontsource/geist-mono/400.css";
+@import "@fontsource/geist-mono/500.css";
+
+/* Design values follow .claude/skills/landing-page-design (Part B).
+   Dark backgrounds only from its approved list; one accent for labels. */
+@theme {
+  --font-sans: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+
+  --color-ink: #000000;
+  --color-panel: #181818;
+  --color-raised: #1f1f1f;
+  --color-line: #272727;
+  --color-line-strong: #313131;
+  --color-fg: #ededed;
+  --color-dim: #9b9b9b;
+  --color-faint: #6e6e6e;
+  --color-accent: #f2555a;
+  --color-live: #3ddc84;
+
+  --ease-base: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    background: var(--color-ink);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+  }
+  h1, h2, h3 { text-wrap: balance; }
+  p, li { text-wrap: pretty; }
+  ::selection { background: var(--color-accent); color: #000; }
+  :focus-visible {
+    outline: 2px solid var(--color-fg);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@utility hero-gradient {
+  background: linear-gradient(90deg, #ffffff, #9b9b9b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Scroll reveal: only hidden when JS is on, so the page works without it. */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 700ms var(--ease-base), transform 700ms var(--ease-base);
+}
+.js [data-reveal].is-visible { opacity: 1; transform: none; }
+
+.tagline-word {
+  color: rgb(237 237 237 / 0.3);
+  transition: color 500ms var(--ease-base);
+}
+.tagline-word.on { color: var(--color-fg); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js [data-reveal] { transform: none; transition: opacity 300ms linear; }
+}
+
+/* Long form write-ups, including rendered R output (knitr, kable, gt). */
+.prose {
+  color: #cfcfcf;
+  font-size: 1rem;
+  line-height: 1.75rem;
+}
+.prose > * + * { margin-top: 1.5rem; }
+.prose h1, .prose h2 {
+  color: var(--color-fg);
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+  margin-top: 3rem;
+}
+.prose h3, .prose h4 {
+  color: var(--color-fg);
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  margin-top: 2.5rem;
+}
+.prose a { color: var(--color-fg); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--color-faint); }
+.prose a:hover { text-decoration-color: var(--color-fg); }
+.prose strong { color: var(--color-fg); font-weight: 600; }
+.prose ul { list-style: disc; padding-left: 1.5rem; }
+.prose ol { list-style: decimal; padding-left: 1.5rem; }
+.prose li + li { margin-top: 0.5rem; }
+.prose img {
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+  border-radius: 12px;
+  background: #fff;
+  padding: 8px;
+}
+.prose pre {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--color-line);
+  background: var(--color-panel) !important;
+  overflow-x: auto;
+}
+.prose :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--color-raised);
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+.prose table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  border-collapse: collapse;
+}
+.prose th, .prose td { padding: 8px 12px; border: 1px solid var(--color-line); }
+.prose th { color: var(--color-fg); font-weight: 500; background: var(--color-panel); }
+/* gt tables bring their own light theme; give them a light card to sit on. */
+.prose div:has(> .gt_table), .prose div:has(> style + table.gt_table) {
+  background: #fff;
+  border-radius: 12px;
+  padding: 8px !important;
+}
+.prose .gt_table td, .prose .gt_table th { border: 0; }

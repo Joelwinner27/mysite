@@ -1,0 +1,18 @@
+---
+// Phosphor icons (regular weight), inlined at build time. Add a name to the glob to use a new one.
+const icons = import.meta.glob("/node_modules/@phosphor-icons/core/assets/regular/{github-logo,linkedin-logo,chart-bar,file-text,envelope-simple,arrow-right,arrow-up-right,arrow-left,list,x}.svg", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+}) as Record<string, string>;
+
+interface Props {
+  name: string;
+  class?: string;
+}
+const { name, class: className = "size-5" } = Astro.props;
+const svg = icons[`/node_modules/@phosphor-icons/core/assets/regular/${name}.svg`];
+if (!svg) throw new Error(`Unknown icon: ${name}`);
+const html = svg.replace("<svg ", `<svg aria-hidden="true" class="${className}" `);
+---
+<Fragment set:html={html} />

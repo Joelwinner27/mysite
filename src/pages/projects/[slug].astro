@@ -1,0 +1,37 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Icon from "../../components/Icon.astro";
+import { formatDate } from "../../data/site";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const { title, sport, summary, tools, date, thumbnail, live } = project.data;
+---
+<Base title={title} description={summary} image={thumbnail}>
+  <article class="mx-auto max-w-3xl px-6 pt-40">
+    <a href="/projects/" class="inline-flex items-center gap-2 text-sm text-dim transition-colors duration-300 ease-base hover:text-fg">
+      <Icon name="arrow-left" class="size-4" /> All projects
+    </a>
+    <header class="mt-8 border-b border-line pb-8">
+      <div class="flex items-center gap-4 font-mono text-xs tracking-wider uppercase">
+        <span class="text-accent">{sport}</span>
+        <time datetime={date.toISOString()} class="text-faint">{formatDate(date)}</time>
+        {live && <span class="flex items-center gap-2 text-live"><span class="size-2 rounded-full bg-live" />Live</span>}
+      </div>
+      <h1 class="hero-gradient mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">{title}</h1>
+      <p class="mt-4 text-lg text-dim">{summary}</p>
+      <ul class="mt-6 flex flex-wrap gap-2" aria-label="Tools">
+        {tools.map((t) => <li class="rounded-md border border-line px-2 py-0.5 font-mono text-xs text-dim">{t}</li>)}
+      </ul>
+    </header>
+    <div class="prose mt-10">
+      <Content />
+    </div>
+  </article>
+</Base>
