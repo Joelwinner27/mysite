@@ -1,5 +1,6 @@
 ---
 title: "March Madness analysis"
+headline: "What does a champion look like before the tournament?"
 date: 2025-05-12
 sport: "NCAAB"
 summary: "Clustered past champions and tested Naive Bayes, random forest and SVM models against the 2025 bracket."
@@ -8,7 +9,6 @@ thumbnail: "/projects/March-Madness-Analysis_files/figure-html/unnamed-chunk-9-1
 featured: true
 order: 3
 ---
-<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 <link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 
 

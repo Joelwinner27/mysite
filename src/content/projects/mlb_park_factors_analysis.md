@@ -1,5 +1,6 @@
 ---
 title: "MLB park factors analysis"
+headline: "Does Coors Field really play different?"
 date: 2025-05-09
 sport: "MLB"
 summary: "Simulated identical batted balls in every park. Coors Field came out on top for hit probability, Seattle near the bottom."
@@ -8,7 +9,6 @@ thumbnail: "/projects/MLB_park_factors_analysis_files/figure-html/unnamed-chunk-
 featured: true
 order: 2
 ---
-<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 <link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 
 

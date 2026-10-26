@@ -8,6 +8,6 @@ export default defineConfig({
   devToolbar: { enabled: false },
   vite: { plugins: [tailwindcss()] },
   markdown: {
-    shikiConfig: { theme: "github-dark-default" },
+    shikiConfig: { theme: "github-light" },
   },
 });

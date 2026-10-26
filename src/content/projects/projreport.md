@@ -1,5 +1,6 @@
 ---
 title: "Google search interest forecast"
+headline: "When does America start dreaming about vacation?"
 date: 2025-04-21
 sport: "Forecasting"
 summary: "Modeled 20 years of US search interest in “vacation”. A SARIMA(1,1,1)(0,1,1)[12] model gave the best fit."

@@ -8,6 +8,8 @@ const projects = defineCollection({
   loader: glob({ pattern: "*.md", base: "./src/content/projects", generateId: keepName }),
   schema: z.object({
     title: z.string(),
+    // Newspaper-style headline for cards and the article page; falls back to title.
+    headline: z.string().optional(),
     date: z.coerce.date(),
     sport: z.string(),
     summary: z.string(),

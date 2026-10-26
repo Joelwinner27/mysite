@@ -1,5 +1,6 @@
 ---
 title: "Pi line board"
+headline: "The sportsbook board that runs on an old TV"
 date: 2026-09-26
 sport: "NFL · CFB"
 live: true

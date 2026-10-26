@@ -2,14 +2,15 @@
 import Icon from "./Icon.astro";
 import { site } from "../data/site";
 ---
-<footer class="mx-auto mt-24 max-w-5xl border-t border-line px-6 py-10">
-  <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-    <p class="font-mono text-xs text-faint">© {new Date().getFullYear()} Joel Winner · Built with Astro</p>
-    <div class="flex items-center gap-4 text-dim">
-      <a href={`mailto:${site.email}`} aria-label="Email" class="transition-colors duration-300 ease-base hover:text-fg"><Icon name="envelope-simple" /></a>
-      <a href={site.links.linkedin} aria-label="LinkedIn" class="transition-colors duration-300 ease-base hover:text-fg"><Icon name="linkedin-logo" /></a>
-      <a href={site.links.github} aria-label="GitHub" class="transition-colors duration-300 ease-base hover:text-fg"><Icon name="github-logo" /></a>
-      <a href={site.links.tableau} aria-label="Tableau Public" class="transition-colors duration-300 ease-base hover:text-fg"><Icon name="chart-bar" /></a>
+<footer class="mx-auto mt-24 max-w-6xl px-6 pb-10">
+  <div class="double-rule flex flex-col items-center gap-4 py-6 text-center">
+    <p class="font-masthead text-2xl font-extrabold">{site.paper}</p>
+    <div class="flex items-center gap-4 text-ink-soft">
+      <a href={`mailto:${site.email}`} aria-label="Email" class="transition-colors duration-300 ease-base hover:text-press"><Icon name="envelope-simple" /></a>
+      <a href={site.links.linkedin} aria-label="LinkedIn" class="transition-colors duration-300 ease-base hover:text-press"><Icon name="linkedin-logo" /></a>
+      <a href={site.links.github} aria-label="GitHub" class="transition-colors duration-300 ease-base hover:text-press"><Icon name="github-logo" /></a>
+      <a href={site.links.tableau} aria-label="Tableau Public" class="transition-colors duration-300 ease-base hover:text-press"><Icon name="chart-bar" /></a>
     </div>
   </div>
+  <p class="kicker mt-4 text-center text-muted">Printed in Cincinnati · © {new Date().getFullYear()} Joel Winner · Set in Astro</p>
 </footer>

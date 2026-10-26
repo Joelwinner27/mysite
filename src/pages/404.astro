@@ -3,15 +3,15 @@ import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
 ---
 <Base title="Page not found">
-  <section class="mx-auto flex max-w-5xl flex-col items-start px-6 pt-40 pb-24">
-    <p class="font-mono text-xs tracking-wider text-accent uppercase">Error 404 · No result</p>
-    <h1 class="hero-gradient mt-3 font-mono text-8xl font-medium">0–0</h1>
-    <p class="mt-6 max-w-[680px] text-lg text-dim">
-      This page doesn’t exist, or it moved when the site was rebuilt. The projects and posts are all still here.
+  <section class="mx-auto flex max-w-3xl flex-col items-center px-6 pt-16 pb-24 text-center">
+    <p class="kicker text-press">Correction · Error 404</p>
+    <h1 class="mt-4 font-masthead text-6xl font-extrabold tracking-tight sm:text-7xl">Stop the presses</h1>
+    <p class="mt-6 max-w-[560px] text-xl text-ink-soft italic">
+      This page was never printed, or it moved when the almanac was redesigned. Every project and dispatch is still in the archive.
     </p>
-    <div class="mt-10 flex flex-wrap gap-4">
-      <a href="/" class="inline-flex items-center gap-2 rounded-lg bg-fg px-3 py-2 text-base font-semibold text-ink transition-transform duration-300 ease-base hover:scale-[1.03] active:scale-[0.98]">Back home</a>
-      <a href="/projects/" class="inline-flex items-center gap-2 rounded-lg border border-line-strong px-3 py-2 text-base font-semibold text-fg transition-colors duration-300 ease-base hover:bg-panel">Browse projects <Icon name="arrow-right" class="size-4" /></a>
+    <div class="mt-10 flex flex-wrap justify-center gap-4">
+      <a href="/" class="kicker inline-flex items-center gap-2 bg-ink px-3 py-2 text-paper transition-transform duration-300 ease-base hover:-translate-y-0.5">Front page</a>
+      <a href="/projects/" class="kicker inline-flex items-center gap-2 border border-ink px-3 py-2 text-ink transition-colors duration-300 ease-base hover:bg-ink hover:text-paper">The archive <Icon name="arrow-right" class="size-4" /></a>
     </div>
   </section>
 </Base>

@@ -1,99 +1,63 @@
 ---
-import Icon from "./Icon.astro";
-import { nav, site } from "../data/site";
+import { getCollection } from "astro:content";
+import { issueLine, longDate, nav, site } from "../data/site";
 
+interface Props {
+  // The front page gets the full size masthead; inner pages get a compact one.
+  large?: boolean;
+}
+const { large = false } = Astro.props;
 const path = Astro.url.pathname;
-const isCurrent = (href: string) => !href.includes("#") && path.startsWith(href);
+const projectCount = (await getCollection("projects")).length;
+const isCurrent = (href: string) => (href === "/" ? path === "/" : !href.includes("#") && path.startsWith(href));
 ---
-<header class="fixed inset-x-0 top-4 z-40 flex justify-center px-4">
-  <nav
-    aria-label="Main"
-    class="flex items-center gap-2 rounded-full border border-line bg-panel/70 py-2 pr-2 pl-4 backdrop-blur-md"
-  >
-    <a href="/" class="mr-2 font-mono text-sm font-medium tracking-wide text-fg">JW</a>
-    <ul class="hidden items-center gap-1 sm:flex">
-      {
-        nav.map((item) => (
-          <li>
-            <a
-              href={item.href}
-              aria-current={isCurrent(item.href) ? "page" : undefined}
-              class="rounded-full px-3 py-2 text-sm text-dim transition-colors duration-300 ease-base hover:text-fg aria-[current=page]:bg-raised aria-[current=page]:text-fg"
-            >
-              {item.label}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-    <a
-      href={site.resume}
-      class="hidden rounded-full bg-fg px-3 py-2 text-sm font-semibold text-ink transition-transform duration-300 ease-base hover:scale-[1.03] active:scale-[0.98] sm:inline-block"
-      >Resume</a
+<header class="mx-auto max-w-6xl px-6 pt-6">
+  <div class="kicker flex items-center justify-between gap-4 pb-2 text-muted">
+    <span>{issueLine(projectCount)}</span>
+    <span class="hidden sm:inline">Cincinnati, Ohio</span>
+    <span class="hidden md:inline">{longDate(new Date())}</span>
+    <a href={site.resume} class="text-ink underline decoration-rule underline-offset-4 transition-colors duration-300 ease-base hover:text-press md:hidden">Resume</a>
+  </div>
+  <div data-rule class="h-px bg-ink"></div>
+  <a href="/" class="block text-center" aria-label={`${site.paper}, front page`}>
+    <span
+      class:list={[
+        "block font-masthead font-extrabold tracking-tight text-ink",
+        large ? "py-6 text-5xl sm:py-8 sm:text-7xl lg:text-8xl" : "py-4 text-3xl sm:text-4xl",
+      ]}
     >
-    <button
-      id="menu-toggle"
-      type="button"
-      aria-expanded="false"
-      aria-controls="mobile-menu"
-      aria-label="Open menu"
-      class="relative grid size-8 place-items-center rounded-full text-fg sm:hidden"
-    >
-      <span class="menu-line absolute h-0.5 w-4 -translate-y-1 rounded-full bg-current transition-transform duration-500 ease-base"></span>
-      <span class="menu-line absolute h-0.5 w-4 translate-y-1 rounded-full bg-current transition-transform duration-500 ease-base"></span>
-    </button>
-  </nav>
+      {site.paper}
+    </span>
+  </a>
+  {
+    large && (
+      <p class="kicker pb-4 text-center text-muted">Sports analytics · Models · Data tools — Edited by Joel Winner</p>
+    )
+  }
 </header>
-
-<div
-  id="mobile-menu"
-  class="pointer-events-none fixed inset-0 z-30 bg-ink/90 opacity-0 backdrop-blur-xl transition-opacity duration-300 ease-base sm:hidden"
->
-  <ul class="flex h-full flex-col justify-center gap-6 px-8">
-    {
-      [...nav, { label: "Resume", href: site.resume }].map((item) => (
-        <li class="menu-item translate-y-6 opacity-0 transition duration-500 ease-base">
-          <a href={item.href} class="text-4xl font-semibold text-fg">
-            {item.label}
+<nav aria-label="Sections" class="sticky top-0 z-40 bg-paper/90 backdrop-blur-md">
+  <div class="mx-auto max-w-6xl px-6">
+    <div class="double-rule">
+      <ul class="kicker flex items-center justify-center gap-4 py-3 sm:gap-8">
+        {
+          nav.map((item) => (
+            <li class:list={[!item.mobile && "hidden sm:block"]}>
+              <a
+                href={item.href}
+                aria-current={isCurrent(item.href) ? "page" : undefined}
+                class="text-ink transition-colors duration-300 ease-base hover:text-press aria-[current=page]:text-press"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+        <li class="hidden md:block">
+          <a href={site.resume} class="border border-ink px-2 py-1 text-ink transition-colors duration-300 ease-base hover:bg-ink hover:text-paper">
+            Resume
           </a>
         </li>
-      ))
-    }
-    <li class="menu-item mt-6 flex translate-y-6 gap-6 opacity-0 transition duration-500 ease-base">
-      <a href={site.links.linkedin} aria-label="LinkedIn" class="text-dim hover:text-fg"><Icon name="linkedin-logo" class="size-6" /></a>
-      <a href={site.links.github} aria-label="GitHub" class="text-dim hover:text-fg"><Icon name="github-logo" class="size-6" /></a>
-      <a href={site.links.tableau} aria-label="Tableau Public" class="text-dim hover:text-fg"><Icon name="chart-bar" class="size-6" /></a>
-    </li>
-  </ul>
-</div>
-
-<script>
-  const toggle = document.getElementById("menu-toggle")!;
-  const menu = document.getElementById("mobile-menu")!;
-  const lines = toggle.querySelectorAll<HTMLElement>(".menu-line");
-  const items = menu.querySelectorAll<HTMLElement>(".menu-item");
-
-  function setOpen(open: boolean) {
-    toggle.setAttribute("aria-expanded", String(open));
-    toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-    document.body.style.overflow = open ? "hidden" : "";
-    menu.classList.toggle("opacity-0", !open);
-    menu.classList.toggle("pointer-events-none", !open);
-    // Tailwind's translate classes use the separate `translate` property, so reset it too.
-    lines.forEach((line, i) => {
-      line.style.translate = open ? "0 0" : "";
-      line.style.transform = open ? `rotate(${i ? -45 : 45}deg)` : "";
-    });
-    // Links arrive in reading order, 60ms apart, capped at 400ms total.
-    const step = Math.min(60, 400 / items.length);
-    items.forEach((item, i) => {
-      item.style.transitionDelay = open ? `${Math.round(i * step)}ms` : "0ms";
-      item.classList.toggle("opacity-0", !open);
-      item.classList.toggle("translate-y-6", !open);
-    });
-  }
-
-  toggle.addEventListener("click", () => setOpen(toggle.getAttribute("aria-expanded") !== "true"));
-  menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setOpen(false)));
-  document.addEventListener("keydown", (e) => e.key === "Escape" && setOpen(false));
-</script>
+      </ul>
+    </div>
+  </div>
+</nav>

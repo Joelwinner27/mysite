@@ -434,11 +434,11 @@ SOFTWARE.
 
 # Project values: joelwinner.org
 
-This site is a personal portfolio, not a product page. Use Part B in full; use Part A only for structure ideas, and skip conversion copy (pricing, risk reversal, FAQ, testimonials).
+"The Winner Almanac": a vintage sports annual on warm newsprint (Joel picked this direction 2026-10-26). It overrides B1 fonts, B4 dark backgrounds and B5 hero gradient. Keep B2 spacing, B3 radius (mostly square here), B7 motion curve, B8 copy rules, B9 states and B10 checklist. Skip Part A conversion copy.
 
-- **Fonts:** Geist Sans for everything; Geist Mono for numbers, dates, sport tags and tool chips.
-- **Backgrounds:** `#000000` page, `#181818` cards, `#1F1F1F` hover, `#272727` / `#313131` borders.
-- **Text:** `#EDEDED` primary, `#9B9B9B` secondary, `#6E6E6E` faint.
-- **Accent:** `#F2555A` (scarlet, for Ohio State) on small labels only. `#3DDC84` marks anything live.
-- **Look:** scoreboard details: sport tag plus FINAL / LIVE on project cards, a mono stat strip under the hero.
+- **Fonts:** Playfair Display 800 for the masthead and article headlines; Oswald 600 uppercase for section headlines and box score numbers; Source Serif 4 for body text; IBM Plex Mono uppercase for kickers, datelines and labels.
+- **Colors:** paper `#F3EBDC`, light paper `#F8F2E6`, ink `#231C14`, soft ink `#4A3F31`, muted `#6E604C`, rules `#8B7D68` / `#CFC3AD`, press red `#A3322A` for kickers and hovers, live green `#2E7D4F`.
+- **Print details:** faint paper grain, double rules around the nav and footer, dotted rules between sidebar items, charts printed with `mix-blend-mode: multiply` plus a light sepia (the `newsprint` utility), drop caps on articles.
+- **Voice:** newspaper framing (cover story, also in this issue, box score, dispatches, about the editor). Headlines can be questions; deks come from the write ups, never invented numbers.
+- **Motion:** ink settles in (fade, rise, slight blur clearing), masthead hairline draws across, box score numbers tick up, pull quote words darken in reading order, page turns via cross document view transitions.
 - Tokens live in `src/styles/global.css` under `@theme`.

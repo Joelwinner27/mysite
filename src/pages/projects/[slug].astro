@@ -11,24 +11,22 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
-const { title, sport, summary, tools, date, thumbnail, live } = project.data;
+const { title, headline, sport, summary, tools, date, thumbnail, live } = project.data;
 ---
 <Base title={title} description={summary} image={thumbnail}>
-  <article class="mx-auto max-w-3xl px-6 pt-40">
-    <a href="/projects/" class="inline-flex items-center gap-2 text-sm text-dim transition-colors duration-300 ease-base hover:text-fg">
-      <Icon name="arrow-left" class="size-4" /> All projects
+  <article class="mx-auto max-w-3xl px-6 pt-10">
+    <a href="/projects/" class="kicker inline-flex items-center gap-2 text-muted transition-colors duration-300 ease-base hover:text-press">
+      <Icon name="arrow-left" class="size-4" /> The archive
     </a>
-    <header class="mt-8 border-b border-line pb-8">
-      <div class="flex items-center gap-4 font-mono text-xs tracking-wider uppercase">
-        <span class="text-accent">{sport}</span>
-        <time datetime={date.toISOString()} class="text-faint">{formatDate(date)}</time>
+    <header class="mt-8 border-b border-ink pb-8 text-center">
+      <p class="kicker flex flex-wrap items-center justify-center gap-3 text-press">
+        {sport}
         {live && <span class="flex items-center gap-2 text-live"><span class="size-2 rounded-full bg-live" />Live</span>}
-      </div>
-      <h1 class="hero-gradient mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">{title}</h1>
-      <p class="mt-4 text-lg text-dim">{summary}</p>
-      <ul class="mt-6 flex flex-wrap gap-2" aria-label="Tools">
-        {tools.map((t) => <li class="rounded-md border border-line px-2 py-0.5 font-mono text-xs text-dim">{t}</li>)}
-      </ul>
+      </p>
+      <h1 class="mt-4 font-masthead text-4xl leading-tight font-extrabold tracking-tight sm:text-6xl sm:leading-none">{headline ?? title}</h1>
+      <p class="mx-auto mt-6 max-w-[620px] text-xl text-ink-soft italic">{summary}</p>
+      <p class="kicker mt-6 text-muted">By Joel Winner · {formatDate(date)}</p>
+      <p class="kicker mt-2 text-muted">Equipment: {tools.join(" · ")}</p>
     </header>
     <div class="prose mt-10">
       <Content />

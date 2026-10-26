@@ -8,11 +8,11 @@ const projects = (await getCollection("projects")).sort((a, b) => a.data.order -
 ---
 <Base title="Projects" description="Sports analytics, forecasting and data visualization projects by Joel Winner.">
   <PageHeader
-    eyebrow="Projects"
-    title="Things I’ve built"
-    intro="Sports analytics write ups, models and dashboards. Each one links to the full analysis and code."
+    kicker="The archive"
+    title="Every project, on the record"
+    intro="Models, analyses and dashboards. Each one links to the full write up and code."
   />
-  <ul class="mx-auto grid max-w-5xl gap-4 px-6 sm:grid-cols-2 lg:grid-cols-3">
-    {projects.map((p) => <li data-reveal><ProjectCard project={p} /></li>)}
-  </ul>
+  <ol class="mx-auto max-w-6xl border-t-4 border-ink px-6">
+    {projects.map((p, i) => <li data-reveal><ProjectCard project={p} number={i + 1} /></li>)}
+  </ol>
 </Base>
