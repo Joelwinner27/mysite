@@ -3,14 +3,14 @@ import Icon from "./Icon.astro";
 import { site } from "../data/site";
 ---
 <footer class="mx-auto mt-24 max-w-6xl px-6 pb-10">
-  <div class="double-rule flex flex-col items-center gap-4 py-6 text-center">
-    <p class="font-masthead text-2xl font-extrabold">{site.paper}</p>
+  <div class="flex flex-col items-center justify-between gap-4 border-t border-ink pt-6 sm:flex-row">
+    <p class="kicker text-muted">© {new Date().getFullYear()} Joel Winner · Cincinnati, Ohio</p>
     <div class="flex items-center gap-4 text-ink-soft">
+      {site.x && <a href={`https://x.com/${site.x}`} aria-label="X" class="transition-colors duration-300 ease-base hover:text-press"><Icon name="x-logo" /></a>}
       <a href={`mailto:${site.email}`} aria-label="Email" class="transition-colors duration-300 ease-base hover:text-press"><Icon name="envelope-simple" /></a>
       <a href={site.links.linkedin} aria-label="LinkedIn" class="transition-colors duration-300 ease-base hover:text-press"><Icon name="linkedin-logo" /></a>
       <a href={site.links.github} aria-label="GitHub" class="transition-colors duration-300 ease-base hover:text-press"><Icon name="github-logo" /></a>
       <a href={site.links.tableau} aria-label="Tableau Public" class="transition-colors duration-300 ease-base hover:text-press"><Icon name="chart-bar" /></a>
     </div>
   </div>
-  <p class="kicker mt-4 text-center text-muted">Printed in Cincinnati · © {new Date().getFullYear()} Joel Winner · Set in Astro</p>
 </footer>

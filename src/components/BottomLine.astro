@@ -1,0 +1,19 @@
+---
+interface Props {
+  stats: { value: string; label: string }[];
+}
+const { stats } = Astro.props;
+---
+<section aria-label="The bottom line" class="border-2 border-ink bg-paper-light">
+  <h2 class="kicker bg-ink px-3 py-1 text-paper">The bottom line</h2>
+  <dl class="grid sm:grid-cols-3">
+    {
+      stats.map((s, i) => (
+        <div class:list={["flex flex-col gap-1 p-4", i > 0 && "border-t border-rule-light sm:border-t-0 sm:border-l"]}>
+          <dd class="headline text-2xl text-ink">{s.value}</dd>
+          <dt class="text-sm text-ink-soft">{s.label}</dt>
+        </div>
+      ))
+    }
+  </dl>
+</section>

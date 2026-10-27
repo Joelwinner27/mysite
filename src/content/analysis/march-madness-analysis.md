@@ -1,13 +1,16 @@
 ---
-title: "March Madness analysis"
-headline: "What does a champion look like before the tournament?"
-date: 2025-05-12
+title: "What does a champion look like before the tournament?"
+type: deep-dive
 sport: "NCAAB"
-summary: "Clustered past champions and tested Naive Bayes, random forest and SVM models against the 2025 bracket."
-tools: ["R", "caret", "kmeans", "PCA"]
+date: 2025-05-12
+summary: "Clustering past champions and testing three models against the 2025 bracket, using KenPom style efficiency numbers."
 thumbnail: "/projects/March-Madness-Analysis_files/figure-html/unnamed-chunk-9-1.png"
-featured: true
-order: 3
+stats:
+  - { value: "23.5%", label: "Naive Bayes exact seed accuracy, 2025 field" }
+  - { value: "8.8%", label: "Accuracy from guessing (no information rate)" }
+  - { value: "4", label: "Inputs: tempo, offense, defense, block %" }
+data: "KenPom style efficiency metrics, 2002–2025 tournaments"
+tools: ["R", "caret", "kmeans", "PCA"]
 ---
 <link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 

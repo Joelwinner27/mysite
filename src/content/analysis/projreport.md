@@ -1,12 +1,16 @@
 ---
-title: "Google search interest forecast"
-headline: "When does America start dreaming about vacation?"
-date: 2025-04-21
+title: "When does America start dreaming about vacation?"
+type: deep-dive
 sport: "Forecasting"
-summary: "Modeled 20 years of US search interest in “vacation”. A SARIMA(1,1,1)(0,1,1)[12] model gave the best fit."
-tools: ["R", "astsa", "SARIMA", "Regression"]
+date: 2025-04-21
+summary: "Twenty years of Google searches for “vacation”, modeled two ways and forecast forward."
 thumbnail: "/projects/projreport_files/figure-html/unnamed-chunk-2-1.png"
-order: 4
+stats:
+  - { value: "2004–24", label: "Monthly Google Trends data" }
+  - { value: "Summer", label: "Peak every single year" }
+  - { value: "SARIMA", label: "(1,1,1)(0,1,1)[12] fit best with fewer parameters" }
+data: "Google Trends, US searches for “vacation”"
+tools: ["R", "astsa", "SARIMA", "Regression"]
 ---
 
 

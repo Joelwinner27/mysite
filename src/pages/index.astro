@@ -2,151 +2,93 @@
 import { getCollection } from "astro:content";
 import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
-import PostRow from "../components/PostRow.astro";
-import { formatDate, site } from "../data/site";
+import AnalysisRow from "../components/AnalysisRow.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import { byNewest, formatDate, readingTime, site, typeLabel } from "../data/site";
 
+const posts = (await getCollection("analysis")).sort(byNewest);
+const [latest, ...recent] = posts;
 const projects = (await getCollection("projects")).sort((a, b) => a.data.order - b.data.order);
-const [lead, ...rest] = projects;
-const posts = (await getCollection("posts")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-
-const boxScore = [
-  { label: "Projects", value: String(projects.length).padStart(2, "0"), count: projects.length },
-  { label: "Sports", value: "04", count: 4 },
-  { label: "Tools", value: "R · Py · SQL" },
-  { label: "Alma mater", value: "OSU ’25" },
-];
-
-const quote = "I like the part nobody sees. The pipelines, the models and the checks that make a chart worth trusting.";
 ---
-<Base largeMasthead>
-  <section class="mx-auto grid max-w-6xl gap-10 px-6 pt-10 lg:grid-cols-[2fr_1fr]">
-    <article data-reveal class="lg:border-r lg:border-ink lg:pr-10">
-      <p class="kicker flex flex-wrap items-center gap-3 text-press">
-        Cover story · {lead.data.sport}
-        {lead.data.live && <span class="flex items-center gap-2 text-live"><span class="size-2 rounded-full bg-live" />Live</span>}
-      </p>
-      <a href={`/projects/${lead.id}/`} class="group block">
-        <h1 class="mt-3 font-masthead text-4xl leading-tight font-extrabold tracking-tight decoration-press decoration-2 underline-offset-8 group-hover:underline sm:text-6xl sm:leading-none">
-          {lead.data.headline ?? lead.data.title}
-        </h1>
-        <p class="mt-4 text-xl text-ink-soft italic">{lead.data.summary}</p>
-        {
-          lead.data.thumbnail && (
-            <figure class="mt-6">
-              <div class="overflow-hidden border border-ink">
-                <img src={lead.data.thumbnail} alt={`${lead.data.title} screenshot`} class="newsprint w-full transition-transform duration-700 ease-base group-hover:scale-[1.02]" />
-              </div>
-              <figcaption class="kicker mt-2 text-muted">{lead.data.title}: the NFL board, live on a Sunday.</figcaption>
-            </figure>
-          )
-        }
-      </a>
-      <div class="mt-4 flex flex-wrap items-center justify-between gap-4 border-t border-rule-light pt-4">
-        <p class="kicker text-muted">By Joel Winner · {formatDate(lead.data.date)}</p>
-        <a href={`/projects/${lead.id}/`} class="kicker inline-flex items-center gap-2 text-ink transition-colors duration-300 ease-base hover:text-press">
-          Read the full story <Icon name="arrow-right" class="size-4" />
-        </a>
-      </div>
-    </article>
+<Base>
+  <section class="mx-auto max-w-6xl px-6 pt-16 sm:pt-24">
+    <p data-reveal class="kicker text-muted">Cincinnati, Ohio · Ohio State Statistics ’25</p>
+    <h1 data-reveal class="mt-4 max-w-[760px] font-masthead text-4xl leading-none font-extrabold tracking-tight sm:text-7xl">
+      Analyst by day.<br /> Sports nerd <br class="sm:hidden" />by night.
+    </h1>
+    <p data-reveal class="mt-6 max-w-[620px] text-xl text-ink-soft">
+      I build data models for a living and use the same tools to argue about college football, baseball and March
+      Madness. This is where the work behind the posts lives.
+    </p>
+  </section>
 
-    <aside class="flex flex-col gap-10">
-      <div data-reveal>
-        <h2 class="kicker border-b border-ink pb-2 text-ink">Also in this issue</h2>
-        <ul>
-          {
-            rest.map((p) => (
-              <li class="border-b border-dotted border-rule">
-                <a href={`/projects/${p.id}/`} class="group block py-4">
-                  <p class="kicker text-press">{p.data.sport}</p>
-                  <h3 class="headline mt-1 text-xl leading-snug text-ink decoration-press decoration-2 underline-offset-4 group-hover:underline">
-                    {p.data.headline ?? p.data.title}
-                  </h3>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-        <a href="/projects/" class="kicker mt-4 inline-flex items-center gap-2 text-ink transition-colors duration-300 ease-base hover:text-press">
-          The full archive <Icon name="arrow-right" class="size-4" />
-        </a>
+  <section class="mx-auto mt-12 grid max-w-6xl gap-8 px-6 lg:grid-cols-[3fr_2fr]">
+    <a data-reveal href={`/analysis/${latest.id}/`} class="group flex flex-col border border-ink bg-paper-light">
+      <div class="kicker flex items-center justify-between border-b border-ink px-4 py-2">
+        <span class="text-press">Latest · {typeLabel[latest.data.type]} · {latest.data.sport}</span>
+        <span class="text-muted">{readingTime(latest.body)}</span>
       </div>
+      {
+        latest.data.thumbnail && (
+          <div class="overflow-hidden border-b border-rule-light p-4">
+            <img src={latest.data.thumbnail} alt="" class="newsprint mx-auto max-h-80 w-auto transition-transform duration-700 ease-base group-hover:scale-[1.02]" />
+          </div>
+        )
+      }
+      <div class="flex flex-1 flex-col gap-3 p-4">
+        <h2 class="font-masthead text-3xl leading-tight font-extrabold decoration-press decoration-2 underline-offset-4 group-hover:underline">{latest.data.title}</h2>
+        <p class="text-lg text-ink-soft italic">{latest.data.summary}</p>
+        <p class="kicker mt-auto flex items-center justify-between pt-2 text-muted">
+          {formatDate(latest.data.date)}
+          <span class="inline-flex items-center gap-2 text-ink">Read it <Icon name="arrow-right" class="size-4" /></span>
+        </p>
+      </div>
+    </a>
 
-      <div data-reveal>
-        <h2 class="kicker border-b border-ink pb-2 text-ink">Box score</h2>
-        <dl class="grid grid-cols-2">
-          {
-            boxScore.map((s, i) => (
-              <div class:list={["py-4", i % 2 === 0 && "border-r border-rule-light pr-4", i % 2 === 1 && "pl-4", i < 2 && "border-b border-rule-light"]}>
-                <dd class="headline text-3xl text-ink" data-count={s.count}>{s.value}</dd>
-                <dt class="kicker mt-1 text-muted">{s.label}</dt>
-              </div>
-            ))
-          }
-        </dl>
+    <aside data-reveal class="double-rule flex flex-col gap-4 py-4">
+      <h2 class="kicker text-muted">Résumé snapshot</h2>
+      <dl class="grid grid-cols-[72px_1fr] gap-x-4 gap-y-3">
+        <dt class="kicker pt-1 text-muted">2025–</dt>
+        <dd><span class="font-semibold text-ink">Financial Analyst, FP&A</span><br /><span class="text-ink-soft">Total Quality Logistics</span></dd>
+        <dt class="kicker pt-1 text-muted">2025</dt>
+        <dd><span class="font-semibold text-ink">B.S. Statistics</span><br /><span class="text-ink-soft">The Ohio State University</span></dd>
+        <dt class="kicker pt-1 text-muted">Builds</dt>
+        <dd class="text-ink-soft">Fabric Lakehouse tables, star schema semantic models and Power BI, from SQL query to production.</dd>
+        <dt class="kicker pt-1 text-muted">Tools</dt>
+        <dd class="text-ink-soft">SQL · Python · R · DAX · Fabric · Power BI</dd>
+      </dl>
+      <div class="mt-auto flex flex-wrap gap-3 pt-2">
+        <a href="/resume/" class="kicker inline-flex items-center gap-2 bg-ink px-3 py-2 text-paper transition-transform duration-300 ease-base hover:-translate-y-0.5 active:translate-y-px">
+          Full résumé <Icon name="arrow-right" class="size-4" />
+        </a>
+        <a href={site.resume} class="kicker inline-flex items-center gap-2 border border-ink px-3 py-2 text-ink transition-colors duration-300 ease-base hover:bg-ink hover:text-paper">
+          <Icon name="download-simple" class="size-4" /> PDF
+        </a>
       </div>
     </aside>
   </section>
 
-  <section aria-label="From the editor" class="mx-auto max-w-6xl px-6 py-24 sm:py-32">
-    <div data-rule class="h-px bg-ink"></div>
-    <blockquote class="mx-auto max-w-[820px] py-12 text-center">
-      <p class="font-masthead text-3xl leading-tight font-semibold sm:text-5xl sm:leading-tight">
-        “{quote.split(" ").map((w) => <><span class="tagline-word">{w}</span>{" "}</>)}”
-      </p>
-      <footer class="kicker mt-6 text-muted">— Joel Winner, editor</footer>
-    </blockquote>
-    <div data-rule class="h-px bg-ink"></div>
-  </section>
-
-  <section class="mx-auto max-w-6xl px-6">
-    <div data-reveal class="double-rule flex items-center justify-between py-3">
-      <h2 class="font-masthead text-3xl font-extrabold">Dispatches</h2>
-      <a href="/posts/" class="kicker inline-flex shrink-0 items-center gap-2 text-ink transition-colors duration-300 ease-base hover:text-press">
-        All dispatches <Icon name="arrow-right" class="size-4" />
+  <section class="mx-auto max-w-6xl px-6 pt-20">
+    <div data-reveal class="flex items-end justify-between border-b border-ink pb-2">
+      <h2 class="font-masthead text-2xl font-extrabold sm:text-3xl">Recent analysis</h2>
+      <a href="/analysis/" class="kicker inline-flex shrink-0 items-center gap-2 text-ink transition-colors duration-300 ease-base hover:text-press">
+        All <Icon name="arrow-right" class="size-4" />
       </a>
     </div>
-    <div class="grid gap-8 pt-8 sm:grid-cols-2 lg:grid-cols-3">
-      {
-        posts.slice(0, 3).map((p, i) => (
-          <div data-reveal class:list={[i > 0 && "sm:border-l sm:border-rule-light sm:pl-8"]}>
-            <PostRow post={p} />
-          </div>
-        ))
-      }
+    <div data-reveal>
+      {recent.slice(0, 5).map((p) => <AnalysisRow post={p} />)}
     </div>
   </section>
 
-  <section id="about" class="mx-auto max-w-6xl scroll-mt-20 px-6 pt-24">
-    <div data-reveal class="grid gap-10 border-t-4 border-ink pt-8 lg:grid-cols-[1fr_2fr]">
-      <div>
-        <p class="kicker text-press">About the editor</p>
-        <h2 class="mt-2 font-masthead text-4xl font-extrabold">Joel Winner</h2>
-        <p class="mt-2 text-ink-soft italic">B.S. Statistics, The Ohio State University, 2025</p>
-        <div class="mt-6 grid aspect-square w-32 place-items-center border border-ink font-masthead text-5xl font-extrabold text-ink" aria-hidden="true">JW</div>
-      </div>
-      <div class="flex flex-col gap-4 text-lg text-ink-soft">
-        <p class="first-letter:float-left first-letter:mt-1 first-letter:mr-2 first-letter:font-masthead first-letter:text-6xl first-letter:leading-none first-letter:font-extrabold first-letter:text-ink">
-          I studied statistics at Ohio State and now work on the FP&A team at Total Quality Logistics in Cincinnati. Most
-          days I own reporting from the query to the dashboard: shaping data in Microsoft Fabric, building semantic
-          models, and keeping Power BI reports running for the people who use them.
-        </p>
-        <p>
-          Outside work I build projects that mix statistics and sports. Past ones dig into Major League Baseball, college
-          basketball and college football, and the newest one is a live line board that runs on a Raspberry Pi hooked up
-          to an old TV.
-        </p>
-        <div id="contact" class="mt-2 flex scroll-mt-20 flex-wrap gap-4">
-          <a href={`mailto:${site.email}`} class="kicker inline-flex items-center gap-2 bg-ink px-3 py-2 text-paper transition-transform duration-300 ease-base hover:-translate-y-0.5 active:translate-y-px">
-            <Icon name="envelope-simple" class="size-4" /> Write to the editor
-          </a>
-          <a href={site.links.linkedin} class="kicker inline-flex items-center gap-2 border border-ink px-3 py-2 text-ink transition-colors duration-300 ease-base hover:bg-ink hover:text-paper">
-            <Icon name="linkedin-logo" class="size-4" /> LinkedIn
-          </a>
-          <a href={site.resume} class="kicker inline-flex items-center gap-2 border border-ink px-3 py-2 text-ink transition-colors duration-300 ease-base hover:bg-ink hover:text-paper">
-            <Icon name="file-text" class="size-4" /> Resume
-          </a>
-        </div>
-      </div>
+  <section class="mx-auto max-w-6xl px-6 pt-20">
+    <div data-reveal class="flex items-end justify-between border-b border-ink pb-2">
+      <h2 class="font-masthead text-2xl font-extrabold sm:text-3xl">Things I’ve built</h2>
+      <a href="/projects/" class="kicker inline-flex shrink-0 items-center gap-2 text-ink transition-colors duration-300 ease-base hover:text-press">
+        All projects <Icon name="arrow-right" class="size-4" />
+      </a>
     </div>
+    <ul class="mt-6 grid gap-6 sm:grid-cols-2">
+      {projects.map((p) => <li data-reveal><ProjectCard project={p} /></li>)}
+    </ul>
   </section>
 </Base>

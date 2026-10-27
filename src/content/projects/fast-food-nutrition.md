@@ -1,6 +1,5 @@
 ---
 title: "Fast food nutrition dashboard"
-headline: "How much protein is really in that burrito bowl?"
 date: 2025-06-04
 sport: "Dashboard"
 summary: "A Tableau dashboard that totals calories and macros for meals at my go to fast casual restaurants."

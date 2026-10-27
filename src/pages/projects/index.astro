@@ -6,13 +6,9 @@ import ProjectCard from "../../components/ProjectCard.astro";
 
 const projects = (await getCollection("projects")).sort((a, b) => a.data.order - b.data.order);
 ---
-<Base title="Projects" description="Sports analytics, forecasting and data visualization projects by Joel Winner.">
-  <PageHeader
-    kicker="The archive"
-    title="Every project, on the record"
-    intro="Models, analyses and dashboards. Each one links to the full write up and code."
-  />
-  <ol class="mx-auto max-w-6xl border-t-4 border-ink px-6">
-    {projects.map((p, i) => <li data-reveal><ProjectCard project={p} number={i + 1} /></li>)}
-  </ol>
+<Base title="Projects" description="Tools and dashboards Joel Winner has built: a live sports line board and a nutrition dashboard.">
+  <PageHeader kicker="Projects" title="Things I’ve built" intro="Tools and dashboards, as opposed to write ups. For the analysis, see the Analysis page." />
+  <ul class="mx-auto grid max-w-6xl gap-6 border-t border-ink px-6 pt-8 sm:grid-cols-2">
+    {projects.map((p) => <li data-reveal><ProjectCard project={p} /></li>)}
+  </ul>
 </Base>

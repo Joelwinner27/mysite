@@ -1,33 +1,27 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { formatDate } from "../data/site";
 
 interface Props {
   project: CollectionEntry<"projects">;
-  number: number;
 }
-const { project, number } = Astro.props;
-const { title, headline, sport, summary, tools, thumbnail, live, date } = project.data;
+const { project } = Astro.props;
+const { title, sport, summary, tools, thumbnail, live } = project.data;
 ---
-<a href={`/projects/${project.id}/`} class="group grid gap-6 border-b border-ink py-8 sm:grid-cols-[96px_1fr_240px]">
-  <span class="font-headline text-4xl font-medium text-rule">No.{String(number).padStart(2, "0")}</span>
-  <div>
-    <p class="kicker flex flex-wrap items-center gap-3 text-press">
-      {sport}
-      {live && <span class="flex items-center gap-2 text-live"><span class="size-2 rounded-full bg-live" />Live</span>}
-      <span class="text-muted">{formatDate(date)}</span>
-    </p>
-    <h2 class="mt-2 font-masthead text-3xl font-semibold text-ink decoration-press decoration-2 underline-offset-4 group-hover:underline">
-      {headline ?? title}
-    </h2>
-    <p class="mt-3 text-lg text-ink-soft">{summary}</p>
-    <p class="kicker mt-4 text-muted">Equipment: {tools.join(" · ")}</p>
-  </div>
+<a href={`/projects/${project.id}/`} class="group flex h-full flex-col border border-ink bg-paper-light transition-transform duration-300 ease-base hover:-translate-y-1 active:translate-y-0">
   {
     thumbnail && (
-      <div class="overflow-hidden border border-ink bg-paper-light p-2">
-        <img src={thumbnail} alt="" loading="lazy" class="newsprint aspect-[4/3] w-full object-contain transition-transform duration-500 ease-base group-hover:scale-[1.03]" />
+      <div class="overflow-hidden border-b border-ink">
+        <img src={thumbnail} alt="" loading="lazy" class="newsprint aspect-[16/9] w-full object-cover object-top transition-transform duration-500 ease-base group-hover:scale-[1.03]" />
       </div>
     )
   }
+  <div class="flex flex-1 flex-col gap-2 p-4">
+    <p class="kicker flex items-center gap-3 text-press">
+      {sport}
+      {live && <span class="flex items-center gap-2 text-live"><span class="size-2 rounded-full bg-live" />Live</span>}
+    </p>
+    <h3 class="headline text-xl text-ink">{title}</h3>
+    <p class="text-ink-soft">{summary}</p>
+    <p class="kicker mt-auto pt-3 text-muted">{tools.join(" · ")}</p>
+  </div>
 </a>

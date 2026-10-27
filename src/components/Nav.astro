@@ -1,50 +1,19 @@
 ---
-import { getCollection } from "astro:content";
-import { issueLine, longDate, nav, site } from "../data/site";
+import { nav, site } from "../data/site";
 
-interface Props {
-  // The front page gets the full size masthead; inner pages get a compact one.
-  large?: boolean;
-}
-const { large = false } = Astro.props;
 const path = Astro.url.pathname;
-const projectCount = (await getCollection("projects")).length;
-const isCurrent = (href: string) => (href === "/" ? path === "/" : !href.includes("#") && path.startsWith(href));
 ---
-<header class="mx-auto max-w-6xl px-6 pt-6">
-  <div class="kicker flex items-center justify-between gap-4 pb-2 text-muted">
-    <span>{issueLine(projectCount)}</span>
-    <span class="hidden sm:inline">Cincinnati, Ohio</span>
-    <span class="hidden md:inline">{longDate(new Date())}</span>
-    <a href={site.resume} class="text-ink underline decoration-rule underline-offset-4 transition-colors duration-300 ease-base hover:text-press md:hidden">Resume</a>
-  </div>
-  <div data-rule class="h-px bg-ink"></div>
-  <a href="/" class="block text-center" aria-label={`${site.paper}, front page`}>
-    <span
-      class:list={[
-        "block font-masthead font-extrabold tracking-tight text-ink",
-        large ? "py-6 text-5xl sm:py-8 sm:text-7xl lg:text-8xl" : "py-4 text-3xl sm:text-4xl",
-      ]}
-    >
-      {site.paper}
-    </span>
-  </a>
-  {
-    large && (
-      <p class="kicker pb-4 text-center text-muted">Sports analytics · Models · Data tools — Edited by Joel Winner</p>
-    )
-  }
-</header>
-<nav aria-label="Sections" class="sticky top-0 z-40 bg-paper/90 backdrop-blur-md">
-  <div class="mx-auto max-w-6xl px-6">
-    <div class="double-rule">
-      <ul class="kicker flex items-center justify-center gap-4 py-3 sm:gap-8">
+<header class="sticky top-0 z-40 bg-paper/90 backdrop-blur-md">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 border-b border-ink px-6 py-4">
+    <a href="/" class="font-masthead text-xl font-extrabold tracking-tight whitespace-nowrap text-ink sm:text-2xl">Joel Winner</a>
+    <nav aria-label="Main">
+      <ul class="kicker flex items-center gap-3 sm:gap-6">
         {
           nav.map((item) => (
-            <li class:list={[!item.mobile && "hidden sm:block"]}>
+            <li>
               <a
                 href={item.href}
-                aria-current={isCurrent(item.href) ? "page" : undefined}
+                aria-current={path.startsWith(item.href) ? "page" : undefined}
                 class="text-ink transition-colors duration-300 ease-base hover:text-press aria-[current=page]:text-press"
               >
                 {item.label}
@@ -52,12 +21,16 @@ const isCurrent = (href: string) => (href === "/" ? path === "/" : !href.include
             </li>
           ))
         }
-        <li class="hidden md:block">
-          <a href={site.resume} class="border border-ink px-2 py-1 text-ink transition-colors duration-300 ease-base hover:bg-ink hover:text-paper">
-            Resume
-          </a>
-        </li>
+        {
+          site.x && (
+            <li class="hidden sm:block">
+              <a href={`https://x.com/${site.x}`} class="border border-ink px-2 py-1 text-ink transition-colors duration-300 ease-base hover:bg-ink hover:text-paper">
+                Follow on X
+              </a>
+            </li>
+          )
+        }
       </ul>
-    </div>
+    </nav>
   </div>
-</nav>
+</header>

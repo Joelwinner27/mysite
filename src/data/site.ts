@@ -1,12 +1,14 @@
+import type { CollectionEntry } from "astro:content";
+
 export const site = {
   name: "Joel Winner",
-  paper: "The Winner Almanac",
-  title: "The Winner Almanac · Sports analytics by Joel Winner",
+  title: "Joel Winner · Sports analytics and data work",
   description:
-    "Joel Winner is an Ohio State statistics graduate who builds sports analytics models, data visualizations and data tools.",
+    "Joel Winner is an analyst and Ohio State statistics graduate. Sports analytics write ups, quick hits after big games, projects and résumé.",
   email: "Joelwinner.127@gmail.com",
   resume: "/Joel-Resume.pdf",
-  founded: 2025,
+  // X handle without the @. Leave empty to hide the follow button.
+  x: "",
   links: {
     linkedin: "https://www.linkedin.com/in/joel-winner/",
     github: "https://github.com/Joelwinner27",
@@ -15,30 +17,30 @@ export const site = {
 };
 
 export const nav = [
-  { label: "Front page", href: "/", mobile: false },
-  { label: "Projects", href: "/projects/", mobile: true },
-  { label: "Dispatches", href: "/posts/", mobile: true },
-  { label: "About", href: "/#about", mobile: true },
+  { label: "Analysis", href: "/analysis/" },
+  { label: "Projects", href: "/projects/" },
+  { label: "Résumé", href: "/resume/" },
 ];
 
-const roman = (n: number) =>
-  [["X", 10], ["IX", 9], ["V", 5], ["IV", 4], ["I", 1]].reduce(
-    (out, [sym, val]) => {
-      while (n >= (val as number)) {
-        out += sym;
-        n -= val as number;
-      }
-      return out;
-    },
-    "",
-  );
+export const typeLabel: Record<CollectionEntry<"analysis">["data"]["type"], string> = {
+  "quick-hit": "Quick hit",
+  analysis: "Analysis",
+  "deep-dive": "Deep dive",
+};
 
-// Volume counts years since the site started; the issue number is the project count.
-export const issueLine = (projectCount: number, now = new Date()) =>
-  `Vol. ${roman(now.getFullYear() - site.founded + 1)} · No. ${String(projectCount).padStart(2, "0")}`;
+export const byNewest = <T extends { data: { date: Date } }>(a: T, b: T) => b.data.date.valueOf() - a.data.date.valueOf();
+
+export const readingTime = (body = "") => {
+  // Skip code, embedded styles and scripts, and tags (rendered R output carries a lot of each).
+  const prose = body
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/<(style|script)[\s\S]*?<\/\1>/g, "")
+    .replace(/<[^>]+>/g, " ");
+  const words = prose.split(/\s+/).filter(Boolean).length;
+  return `${Math.max(1, Math.round(words / 230))} min read`;
+};
 
 export const formatDate = (d: Date) =>
   d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 
-export const longDate = (d: Date) =>
-  d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: "America/New_York" });
+export const shortDate = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });

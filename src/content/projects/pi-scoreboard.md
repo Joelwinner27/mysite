@@ -1,13 +1,11 @@
 ---
 title: "Pi line board"
-headline: "The sportsbook board that runs on an old TV"
 date: 2026-09-26
 sport: "NFL · CFB"
 live: true
 summary: "A sportsbook style board with live scores, spreads and a phone remote, running all day on a Raspberry Pi and an old TV."
 tools: ["JavaScript", "Python", "ESPN API", "Raspberry Pi"]
 thumbnail: "/projects/pi-scoreboard/nfl-board.png"
-featured: true
 order: 1
 ---
 

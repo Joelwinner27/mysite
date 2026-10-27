@@ -1,7 +1,11 @@
 ---
-title: "CFB through 11.18"
+title: "CFB through week 12: ratings and projected spreads"
+type: analysis
+sport: "CFB"
 date: 2025-11-18
-tags: ["CFB", "2025–26 season"]
+summary: "The top 20 by rating against strength of schedule, plus my projected spreads for the week."
+thumbnail: "/posts/through-11.18-cfb/index.en_files/figure-html/unnamed-chunk-11-1.png"
+tools: ["R", "cfbplotR", "gt"]
 ---
 
 <p><img src="/posts/through-11.18-cfb/index.en_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>

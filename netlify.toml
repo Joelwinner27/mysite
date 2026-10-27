@@ -5,30 +5,56 @@ publish = "dist"
 [build.environment]
 NODE_VERSION = "22"
 
-# Pages that moved in the Astro rebuild (2026-10)
-[[redirects]]
-from = "/about/"
-to = "/#about"
-status = 301
-
-[[redirects]]
-from = "/contact/"
-to = "/#contact"
-status = 301
-
+# Analysis moved under /analysis/ (2026-10). Specific rules first: Netlify uses the first match.
 [[redirects]]
 from = "/posts/2020-12-01-r-rmarkdown/*"
 to = "/projects/fast-food-nutrition/"
 status = 301
 
 [[redirects]]
+from = "/posts/:slug"
+to = "/analysis/:slug/"
+status = 301
+
+[[redirects]]
+from = "/posts/"
+to = "/analysis/"
+status = 301
+
+[[redirects]]
+from = "/projects/mlb_park_factors_analysis/*"
+to = "/analysis/mlb_park_factors_analysis/"
+status = 301
+
+[[redirects]]
+from = "/projects/march-madness-analysis/*"
+to = "/analysis/march-madness-analysis/"
+status = 301
+
+[[redirects]]
+from = "/projects/projreport/*"
+to = "/analysis/projreport/"
+status = 301
+
+# Pages that moved in the Astro rebuild (2026-10)
+[[redirects]]
+from = "/about/"
+to = "/resume/"
+status = 301
+
+[[redirects]]
+from = "/contact/"
+to = "/resume/"
+status = 301
+
+[[redirects]]
 from = "/tags/*"
-to = "/posts/"
+to = "/analysis/"
 status = 301
 
 [[redirects]]
 from = "/categories/*"
-to = "/posts/"
+to = "/analysis/"
 status = 301
 
 [[redirects]]
@@ -38,18 +64,18 @@ status = 301
 
 [[redirects]]
 from = "/series/*"
-to = "/posts/"
+to = "/analysis/"
 status = 301
 
 # Old addresses from before the 2026-09 cleanup
 [[redirects]]
 from = "/post/11.13-kenpom/*"
-to = "/posts/kenpom-11.13/"
+to = "/analysis/kenpom-11.13/"
 status = 301
 
 [[redirects]]
 from = "/post/*"
-to = "/posts/"
+to = "/analysis/"
 status = 301
 
 [[redirects]]
@@ -59,10 +85,10 @@ status = 301
 
 [[redirects]]
 from = "/about-us/*"
-to = "/#about"
+to = "/resume/"
 status = 301
 
 [[redirects]]
 from = "/about-hugo/*"
-to = "/#about"
+to = "/resume/"
 status = 301

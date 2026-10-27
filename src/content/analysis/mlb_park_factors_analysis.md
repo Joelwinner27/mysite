@@ -1,13 +1,16 @@
 ---
-title: "MLB park factors analysis"
-headline: "Does Coors Field really play different?"
-date: 2025-05-09
+title: "Does Coors Field really play different?"
+type: deep-dive
 sport: "MLB"
-summary: "Simulated identical batted balls in every park. Coors Field came out on top for hit probability, Seattle near the bottom."
-tools: ["R", "Statcast", "Random forest", "Clustering"]
+date: 2025-05-09
+summary: "I simulated identical batted balls in every MLB park using the full 2024 Statcast season. Park effects are real, but smaller than you'd think."
 thumbnail: "/projects/MLB_park_factors_analysis_files/figure-html/unnamed-chunk-3-1.png"
-featured: true
-order: 2
+stats:
+  - { value: "Coors", label: "Tops simulated hit probability" }
+  - { value: "2024", label: "Every batted ball in play, via Statcast" }
+  - { value: "Real, small", label: "Park effects exist but aren't the biggest factor" }
+data: "Statcast via the baseballr package"
+tools: ["R", "baseballr", "Random forest", "Clustering"]
 ---
 <link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 
