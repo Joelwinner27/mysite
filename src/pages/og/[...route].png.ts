@@ -48,24 +48,29 @@ const el = (type: string, style: Record<string, unknown>, children?: unknown, ex
   props: { style, children, ...extra },
 });
 
+// Cut at a word boundary so long summaries never run into the footer.
+const clip = (s: string, max: number) => (s.length <= max ? s : s.slice(0, s.lastIndexOf(" ", max)) + "…");
+
 export const GET: APIRoute = async ({ props }) => {
-  const { kicker, title, summary, image } = props as Card;
+  const { kicker, title, image } = props as Card;
+  const summary = clip((props as Card).summary, image ? 110 : 160);
+  const titleSize = image ? (title.length > 48 ? 50 : 60) : 76;
   const [playfair, mono, serif] = await fonts;
   const src = image ? `data:image/png;base64,${(await readFile(`public${image}`)).toString("base64")}` : undefined;
 
   const text = el("div", { display: "flex", flexDirection: "column", flex: 1, gap: 24 }, [
     el("div", { fontFamily: "Plex Mono", fontSize: 22, color: "#a3322a", letterSpacing: 2, textTransform: "uppercase" }, kicker),
-    el("div", { fontFamily: "Playfair", fontSize: src ? 60 : 76, lineHeight: 1.05, color: "#231c14", whiteSpace: "pre-wrap" }, title),
+    el("div", { fontFamily: "Playfair", fontSize: titleSize, lineHeight: 1.05, color: "#231c14", whiteSpace: "pre-wrap" }, title),
     el("div", { fontFamily: "Source Serif", fontSize: 28, lineHeight: 1.35, color: "#4a3f31" }, summary),
   ]);
   const chart = src
-    ? el("div", { display: "flex", width: 420, height: 420, border: "2px solid #231c14", background: "#f8f2e6", padding: 16, alignItems: "center", justifyContent: "center" }, [
+    ? el("div", { display: "flex", width: 460, height: 340, border: "2px solid #231c14", background: "#f8f2e6", padding: 12, alignItems: "center", justifyContent: "center" }, [
         el("img", { maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }, undefined, { src }),
       ])
     : null;
 
   const tree = el("div", { display: "flex", flexDirection: "column", width: 1200, height: 630, background: "#f3ebdc", padding: 56 }, [
-    el("div", { display: "flex", flex: 1, gap: 48, alignItems: "center" }, chart ? [text, chart] : [text]),
+    el("div", { display: "flex", flex: 1, gap: 40, alignItems: "center" }, chart ? [text, chart] : [text]),
     el("div", { display: "flex", justifyContent: "space-between", borderTop: "3px solid #231c14", paddingTop: 20, fontFamily: "Plex Mono", fontSize: 22, color: "#231c14", letterSpacing: 2, textTransform: "uppercase" }, [
       el("div", {}, "Joel Winner"),
       el("div", {}, "joelwinner.org"),
