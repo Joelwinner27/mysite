@@ -1,115 +1,291 @@
-"""Build the play list the home page field animation replays.
+"""Build the games the home page field animation replays.
 
-Pulls ESPN's play-by-play for Ohio State 30, Michigan 27 (2OT), Nov. 26, 2016, keeps Ohio State's
-tying drive at the end of regulation plus all four overtime possessions, and writes
-src/data/field-replay.json. Run from the repo root:  python3 analysis/field/build-replay.py
+For each game below, pulls ESPN's play-by-play, keeps the drives listed, and writes
+public/replays/<slug>.json plus an index at src/data/field-games.json. A visitor gets one game
+at random. Run from the repo root:  python3 analysis/field/build-replay.py
+
+Plays ESPN describes in ways the animation can't read (returns, trick plays) are set by hand
+in SPECIAL, keyed by a bit of the play's text. Yard lines there are from the offense's side:
+0 is its own goal line, 100 the goal it attacks.
 """
 import json
 import re
 import urllib.request
 
-EVENT = "400869650"
-OUT = "src/data/field-replay.json"
-QBS = ("J.T. Barrett", "Wilton Speight")
-NAMES = {"OSU": "Ohio State", "MICH": "Michigan"}
-SKIP = {"Timeout", "End of Game", "End Period", "End of Half", "Kickoff Return (Offense)"}
-# A line of context under a few plays. Edit freely.
-NOTES = {
-    "run for 1 yd to the Mich 15": "4th and 1. The spot is still argued about in Ann Arbor.",
-    "Curtis Samuel run for 15 yds": "Ballgame.",
-    "pass complete to Marcus Baugh for 13 yds": "3rd and 18 after two lost-yardage runs.",
+# Uniform colors are approximate for that day: the home team (as ESPN lists it) in its dark
+# jersey, the road team in white.
+TEAMS = {
+    "OSU": {"name": "Ohio State", "dark": ["#bb0000", "#a9aeb1", "#bb0000", "#c4c8ca"], "white": ["#f6f3ec", "#a9aeb1", "#bb0000", "#c4c8ca"], "zone": ["OHIO STATE", "#a51d1d"]},
+    "MICH": {"name": "Michigan", "dark": ["#00274c", "#00274c", "#ffcb05", "#ffcb05"], "white": ["#f6f3ec", "#00274c", "#ffcb05", "#ffcb05"], "zone": ["MICHIGAN", "#00274c"]},
+    "ND": {"name": "Notre Dame", "dark": ["#0c2340", "#c99700", "#c99700", "#c99700"], "white": ["#f6f3ec", "#c99700", "#c99700", "#c99700"], "zone": ["NOTRE DAME", "#0c2340"]},
+    "ALA": {"name": "Alabama", "dark": ["#9e1b32", "#9e1b32", "#f6f3ec", "#f6f3ec"], "white": ["#f6f3ec", "#9e1b32", "#f6f3ec", "#f6f3ec"], "zone": ["ALABAMA", "#9e1b32"]},
+    "MSU": {"name": "Michigan State", "dark": ["#18453b", "#18453b", "#f6f3ec", "#f6f3ec"], "white": ["#f6f3ec", "#18453b", "#f6f3ec", "#f6f3ec"], "zone": ["SPARTANS", "#18453b"]},
+    "AUB": {"name": "Auburn", "dark": ["#0c2340", "#f6f3ec", "#e87722", "#f6f3ec"], "white": ["#f6f3ec", "#f6f3ec", "#e87722", "#f6f3ec"], "zone": ["AUBURN", "#0c2340"]},
+    "BSU": {"name": "Boise State", "dark": ["#0033a0", "#0033a0", "#d64309", "#0033a0"], "white": ["#f6f3ec", "#0033a0", "#d64309", "#0033a0"], "zone": ["BOISE STATE", "#0033a0"]},
+    "OKLA": {"name": "Oklahoma", "dark": ["#841617", "#841617", "#f6f3ec", "#f6f3ec"], "white": ["#f6f3ec", "#841617", "#f6f3ec", "#f6f3ec"], "zone": ["OKLAHOMA", "#841617"]},
+    "TEX": {"name": "Texas", "dark": ["#bf5700", "#f6f3ec", "#bf5700", "#f6f3ec"], "white": ["#f6f3ec", "#f6f3ec", "#bf5700", "#f6f3ec"], "zone": ["TEXAS", "#bf5700"]},
 }
 
-url = f"https://site.api.espn.com/apis/site/v2/sports/football/college-football/summary?event={EVENT}"
-req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (joelwinner.org)"})
-game = json.load(urllib.request.urlopen(req))
-drives = [
-    d for d in game["drives"]["previous"]
-    if any(p["period"]["number"] >= 5 or p["text"].startswith("Tyler Durbin 23 Yd Field Goal") for p in d["plays"])
+GAMES = [
+    {
+        "slug": "osu-mich-2016", "event": "400869650", "title": "Ohio State 30, Michigan 27 (2OT)", "date": "Nov. 26, 2016",
+        "drives": [25, 27, 28, 29, 30], "zones": [["BUCKEYES", "#a51d1d"], ["OHIO STATE", "#a51d1d"]], "final": "OHIO STATE WINS",
+        "still": "run for 1 yd to the Mich 15",
+        "notes": {
+            "run for 1 yd to the Mich 15": "4th and 1. The spot is still argued about in Ann Arbor.",
+            "Curtis Samuel run for 15 yds": "Ballgame.",
+            "pass complete to Marcus Baugh for 13 yds": "3rd and 18 after two lost-yardage runs.",
+        },
+    },
+    {
+        "slug": "osu-mich-2006", "event": "263220194", "title": "Ohio State 42, Michigan 39", "date": "Nov. 18, 2006",
+        "drives": [23, 24, 25], "zones": [["BUCKEYES", "#a51d1d"], ["OHIO STATE", "#a51d1d"]], "final": "OHIO STATE WINS",
+        "still": "Brian Robiskie for 13 yards",
+        "notes": {"Brian Robiskie for 13 yards": "No. 1 vs. No. 2, the day after Bo Schembechler died."},
+    },
+    {
+        "slug": "sugar-2015", "event": "400610178", "title": "Sugar Bowl: Ohio State 42, Alabama 35", "date": "Jan. 1, 2015",
+        "drives": [26, 27, 28, 29], "final": "OHIO STATE WINS", "still": "Ezekiel Elliott 85",
+        "notes": {"Ezekiel Elliott 85": "Ohio State's third-string quarterback was starting his second game."},
+        "special": {"Tyvis Powell": {"kind": "turnover", "action": "pass", "at": [100, -2], "to": [71, -6], "who": "FS"}},
+    },
+    {
+        "slug": "cotton-2025", "event": "401677191", "title": "Cotton Bowl: Ohio State 28, Texas 14", "date": "Jan. 10, 2025",
+        "drives": [19, 20], "final": "SCOOP AND SCORE", "still": "Jack Sawyer",
+        "notes": {"Jack Sawyer": "Ohio State went on to win the national title."},
+        "special": {"Jack Sawyer": {"kind": "turnover", "action": "sack", "at": [83, 3], "to": [-4, 6], "who": "DE2"}},
+    },
+    {
+        "slug": "nd-mich-2011", "event": "312530130", "title": "Michigan 35, Notre Dame 31", "date": "Sept. 10, 2011",
+        "drives": [24, 25, 26], "zones": [["MICHIGAN", "#00274c"], ["MICHIGAN", "#00274c"]], "final": "MICHIGAN WINS",
+        "still": "Roy Roundtree",
+        "notes": {"Roy Roundtree": "Two seconds left. Three touchdowns in the last 72 seconds."},
+    },
+    {
+        "slug": "rose-2024", "event": "401551786", "title": "Rose Bowl: Michigan 27, Alabama 20 (OT)", "date": "Jan. 1, 2024",
+        "drives": [21, 24, 25], "final": "MICHIGAN WINS", "still": "Jalen Milroe run for 1 yd to the MICH 2",
+        "notes": {"Jalen Milroe run for 1 yd to the MICH 2": "Stopped short on 4th and goal. Michigan went on to win the national title."},
+    },
+    {
+        "slug": "msu-mich-2015", "event": "400763542", "title": "Michigan State 27, Michigan 23", "date": "Oct. 17, 2015",
+        "drives": [24, 25], "zones": [["MICHIGAN", "#00274c"], ["MICHIGAN", "#00274c"]], "final": "MICHIGAN STATE WINS",
+        "still": "Blake O'Neill",
+        "notes": {"Blake O'Neill": "Michigan led with 10 seconds left and only had to punt."},
+        "special": {"Blake O'Neill": {"kind": "turnover", "action": "punt", "at": [38, 2], "to": [-4, -4], "who": "LB2"}},
+    },
+    {
+        "slug": "kick-six-2013", "event": "333340002", "title": "Auburn 34, Alabama 28", "date": "Nov. 30, 2013",
+        "drives": [23, 24], "zones": [["AUBURN", "#0c2340"], ["AUBURN", "#0c2340"]], "final": "AUBURN WINS",
+        "still": "Adam Griffith 57",
+        "notes": {
+            "T.J. Yeldon rush for 24": "The clock hit zero; a review put one second back.",
+            "Adam Griffith 57": "The Kick Six: caught 9 yards deep in the end zone and returned 109.",
+        },
+        "special": {"Adam Griffith 57": {"kind": "turnover", "action": "fg", "at": [109, 6], "to": [-4, -3], "who": "SS", "wait": [109, 6]}},
+    },
+    {
+        "slug": "fiesta-2007", "event": "270010201", "title": "Fiesta Bowl: Boise State 43, Oklahoma 42 (OT)", "date": "Jan. 1, 2007",
+        "drives": [28, 29, 30, 31], "final": "BOISE STATE WINS", "still": "lateral to Jerard Rabb",
+        "team": {"Adrian Peterson rush for 25": "OKLA", "Garrett Hartley extra point": "OKLA"},
+        "notes": {
+            "lateral to Jerard Rabb": "Hook and lateral on 4th and 18 with 7 seconds left.",
+            "Vinny Perretta pass complete": "A halfback pass on 4th and 2.",
+            "Ian Johnson rush GOOD": "The Statue of Liberty, for the win.",
+        },
+        "special": {
+            "Marcus Walker": {"kind": "turnover", "action": "pass", "at": [34, -9], "to": [-4, -6], "who": "CB1"},
+            "lateral to Jerard Rabb": {"kind": "hooklat", "catch": 15},
+            "Vinny Perretta pass complete": {"kind": "hbpass"},
+            "Ian Johnson rush GOOD": {"kind": "statue"},
+        },
+    },
 ]
+
+SKIP = {"Timeout", "End of Game", "End Period", "End of Half", "End of Regulation", "Kickoff", "Kickoff Return (Offense)", "Two Minute Warning"}
+QB_NAMES = ("J.T. Barrett", "Wilton Speight", "Troy Smith", "Chad Henne", "Cardale Jones", "Blake Sims", "Will Howard", "Quinn Ewers",
+            "Denard Robinson", "Tommy Rees", "J.J. McCarthy", "Jalen Milroe", "Connor Cook", "Nick Marshall", "AJ McCarron",
+            "Jared Zabransky", "Paul Thompson")
+
+
+def fetch(event):
+    url = f"https://site.api.espn.com/apis/site/v2/sports/football/college-football/summary?event={event}"
+    return json.load(urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (joelwinner.org)"})))
 
 
 def clock(p):
     q = p["period"]["number"]
-    return {5: "OT", 6: "2OT"}.get(q) or f"{['1st', '2nd', '3rd', '4th'][q - 1]} {p['clock']['displayValue']}"
+    return {5: "OT", 6: "2OT", 7: "3OT"}.get(q) or f"{['1st', '2nd', '3rd', '4th'][q - 1]} {p['clock']['displayValue']}"
 
 
 def kind(p):
     t, text = p["type"]["text"], p["text"]
     if t == "Penalty":
         return "inc" if "pass incomplete" in text else "flag"
-    if t.startswith("Rush"):
-        return "qbrun" if text.startswith(QBS) else "run"
-    return {"Pass Reception": "pass", "Passing Touchdown": "pass", "Pass Incompletion": "inc", "Sack": "sack"}.get(t) or (
-        "fg" if t.startswith("Field Goal") else None
-    )
+    if text.startswith("TEAM run"):
+        return "kneel"
+    if t.startswith("Rush") or t == "Run":
+        return "qbrun" if text.startswith(QB_NAMES) else "run"
+    if t.startswith("Pass Reception") or t.startswith("Pass Completion") or t == "Passing Touchdown":
+        return "pass"
+    if t == "Pass Incompletion":
+        return "inc"
+    if t == "Sack":
+        return "sack"
+    if t == "Punt":
+        return "punt"
+    if t.startswith("Field Goal"):
+        return "fg"
+    return None
 
 
 def tidy(text):
-    text = re.sub(r",? \(\w[\w. ]* KICK\)", "", text).strip()
-    m = re.search(r"pass incomplete to (\w+), (\w[\w.]*), PENALTY (\w+) (pass interference)", text)
+    text = re.sub(r",? \(\w[\w. ]* (KICK|Kick)\)", "", text)
+    text = re.sub(r" \((\w[\w. ]*) (Pass to|pass to|Run|run)[\w.' -]*\)", "", text)
+    text = text.replace("sacked sacked", "sacked").replace("Sawayer", "Sawyer").strip()
+    m = re.search(r"(\w[\w.]*), (\w[\w.]*) pass incomplete to (\w[\w'.]*), (\w[\w.]*), PENALTY (\w+) (pass interference)", text)
     if m:
-        return f"J.T. Barrett pass incomplete to {m[2]} {m[1]}. Flag: {m[4]} on {m[3].title()}, 15 yards."
+        return f"{m[2]} {m[1]} pass incomplete to {m[4]} {m[3]}. Flag: {m[6]} on {m[5].title()}."
     m = re.match(r"(OHIO ST|MICHIGAN) Penalty, ([\w ]+) \(", text)
     if m:
         return f"Flag: {m[2].lower()} on {'Ohio State' if m[1] == 'OHIO ST' else 'Michigan'}, 5 yards."
-    return text.replace("OhSt", "Ohio State").replace("Mich ", "Michigan ")
+    for a, b in [("OhSt", "Ohio State"), ("Mich ", "Michigan "), ("MchSt", "Michigan State"), ("NDame", "Notre Dame"), ("Alab ", "Alabama "),
+                 ("Aub ", "Auburn "), ("BoiSt", "Boise State"), ("Okla ", "Oklahoma "), (" yds", " yards"), (" yd ", " yard ")]:
+        text = text.replace(a, b)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text if len(text) <= 150 else text[:text.rfind(" ", 0, 147)] + "…"
 
 
-plays, score = [], [17, 14]  # Michigan, Ohio State before the drive
-for d in drives:
-    team = d["team"]["abbreviation"]
-    keep = [p for p in d["plays"] if p["type"]["text"] not in SKIP]
-    for i, p in enumerate(keep):
-        k = kind(p)
-        if not k:
-            continue
-        s, text = p["start"], p["text"]
-        x = 100 - s["yardsToEndzone"]
-        scoring = p.get("scoringPlay", False)
-        if i + 1 < len(keep) and not scoring:
-            gain = s["yardsToEndzone"] - keep[i + 1]["start"]["yardsToEndzone"]
+def spot(ytez, off, deff):
+    if ytez == 50:
+        return "the 50"
+    return f"{off} {100 - ytez}" if ytez > 50 else f"{deff} {ytez}"
+
+
+def build(g):
+    game = fetch(g["event"])
+    comp = game["header"]["competitions"][0]["competitors"]
+    side = {c["homeAway"]: c["team"]["abbreviation"] for c in comp}
+    ids = {c["team"]["id"]: c["team"]["abbreviation"] for c in comp}
+    home, away = side["home"], side["away"]
+    drives = game["drives"]["previous"]
+    # score before the first replayed play, from the last play ahead of it
+    first_id = next(p["id"] for p in drives[g["drives"][0]]["plays"])
+    before = [0, 0]
+    for d in drives:
+        for p in d["plays"]:
+            if p["id"] == first_id:
+                break
+            before = [p["awayScore"], p["homeScore"]]
         else:
-            gain = 0 if k == "fg" else p.get("statYardage", 0)
-        after = [p["awayScore"], p["homeScore"]]
-        pat = re.search(r"\((\w[\w. ]*) KICK\)", text)
-        row = {
-            "team": team,
-            "kind": k,
-            "x": x,
-            "gain": gain,
-            "toGain": None if s["distance"] <= 0 or s["distance"] >= s["yardsToEndzone"] else x + s["distance"],
-            "down": s["downDistanceText"].replace("& 0", "& Goal"),
-            "clock": clock(p),
-            "text": tidy(text),
-            "score": score,
-            "after": [after[0] - (pat and team == "MICH"), after[1] - (pat and team == "OSU")] if pat else after,
-            "td": "Touchdown" in p["type"]["text"],
-        }
-        if k == "fg":
-            row["good"] = "Good" in p["type"]["text"]
-        for key, note in NOTES.items():
-            if key in text:
-                row["note"] = note
-        plays.append(row)
-        score = row["after"]
-        if pat:
-            plays.append({
-                "team": team, "kind": "fg", "good": True, "x": 97, "gain": 0, "toGain": None, "down": "Extra point",
-                "clock": clock(p), "text": f"{pat[1]} extra point is good", "score": score, "after": after, "td": False,
-            })
-            score = after
-    plays[-1]["endDrive"] = True
+            continue
+        break
+    rows = []
+    for di in g["drives"]:
+        keep = [p for p in drives[di]["plays"] if p["type"]["text"] not in SKIP and not any(d in p["text"] for d in g.get("drop", []))]
+        for i, p in enumerate(keep):
+            text, s = p["text"], p.get("start", {})
+            team = next((t for k, t in g.get("team", {}).items() if k in text), None) or ids.get(s.get("team", {}).get("id")) or drives[di]["team"]["abbreviation"]
+            other = away if team == home else home
+            special = next((v for k, v in g.get("special", {}).items() if k in text), None)
+            two = "Two-point" in text
+            if p["type"]["text"].startswith("Extra Point"):
+                k = (special or {}).get("kind") or (("pass" if " pass " in text else "run") if two else "fg")
+                row = {"kind": k, "x": 97, "gain": 3 if two else 0, "toGain": None, "down": "Two-point try" if two else "Extra point",
+                       "td": two, "good": "GOOD" in text.upper()}
+            else:
+                k = (special or {}).get("kind") or kind(p)
+                if not k:
+                    continue
+                ytez = s["yardsToEndzone"]
+                if p.get("scoringPlay") or i + 1 >= len(keep) or k in ("punt", "turnover"):
+                    gain = 0 if k in ("fg", "punt", "turnover") else p.get("statYardage", 0)
+                else:
+                    gain = ytez - keep[i + 1]["start"]["yardsToEndzone"]
+                dist = s["distance"]
+                down = f"{['1st', '2nd', '3rd', '4th'][s['down'] - 1]} & {'Goal' if dist <= 0 or dist >= ytez else dist} at {spot(ytez, team, other)}"
+                row = {"kind": k, "x": 100 - ytez, "gain": gain, "toGain": None if dist <= 0 or dist >= ytez else 100 - ytez + dist, "down": down,
+                       "td": k != "turnover" and ("Touchdown" in p["type"]["text"] or "TOUCHDOWN" in text.upper() or " Yd Run" in text or " Yd pass" in text)}
+                if k == "fg":
+                    row["good"] = "Good" in p["type"]["text"] or "GOOD" in text
+                if k == "punt":
+                    m = re.search(r"punt for (\d+) y", text)
+                    row["punt"] = int(m[1]) if m else 40
+                if row["td"]:
+                    row["gain"] = ytez
+                if special:
+                    row.update({key: v for key, v in special.items() if key != "kind"})
+                    if k == "turnover":
+                        row["defTD"] = special["to"][0] < 0
+            row.update({"team": team, "clock": clock(p), "text": tidy(text)})
+            for key, note in g.get("notes", {}).items():
+                if key in text:
+                    row["note"] = note
+            if g.get("still") and g["still"] in text:
+                row["still"] = True
+            rows.append(row)
+            # a conversion folded into the touchdown's text gets its own play
+            failed = re.search(r"fail|no good|blocked", text, re.I)
+            m = re.search(r"\((\w[\w. ]*?) (Kick|KICK)\)", text)
+            conv = re.search(r"\((\w[\w. ]*?) (Pass to|pass to) ([\w.' ]+?)(?: for [\w -]+)?\)", text)
+            run2 = re.search(r"\((\w[\w. ]*?) (Run|run)\)", text)
+            if (row["td"] or row.get("defTD")) and not failed and (m or conv or run2) and row["down"] != "Two-point try":
+                if row.get("defTD"):
+                    row["xp"] = True  # fold the kick into the return so the replay can end on it
+                elif m:
+                    rows.append({"team": team if row["td"] else other, "kind": "fg", "good": True, "x": 97, "gain": 0, "toGain": None, "down": "Extra point",
+                                 "td": False, "clock": clock(p), "text": f"{m[1]} extra point is good"})
+                else:
+                    rows.append({"team": team, "kind": "pass" if conv else "run", "x": 97, "gain": 3, "toGain": None, "down": "Two-point try", "td": True,
+                                 "clock": clock(p), "text": f"Two-point try good: {conv[1]} pass to {conv[3]}" if conv else f"Two-point try good: {run2[1]} run"})
+    # keep score ourselves: ESPN's running score sometimes moves a play early
+    score = before
+    for r in rows:
+        ti = 0 if r["team"] == away else 1
+        pts = [0, 0]
+        if r["down"] == "Two-point try":
+            pts[ti] = 2 if r.get("good", True) else 0
+        elif r["down"] == "Extra point":
+            pts[ti] = 1 if r.get("good") else 0
+        elif r["kind"] == "fg":
+            pts[ti] = 3 if r.get("good") else 0
+        elif r["td"]:
+            pts[ti] = 6
+        elif r.get("defTD"):
+            pts[1 - ti] = 7 if r.get("xp") else 6
+        r["score"], score = score, [score[0] + pts[0], score[1] + pts[1]]
+        r["after"] = score
+    for a, b in zip(rows, rows[1:]):
+        if a["team"] != b["team"]:
+            a["endDrive"] = True
+    for r in rows:
+        if r["kind"] == "punt":
+            r["endDrive"] = True
+    rows[-1]["endDrive"] = rows[-1]["final"] = True
+    final = [int(c["score"]) for c in sorted(comp, key=lambda c: c["homeAway"] != "away")]
+    if rows[-1]["after"] != final and g["drives"][-1] == len(drives) - 1:
+        print(f"  !! {g['slug']}: replay ends {rows[-1]['after']}, ESPN final {final}")
+    first = rows[0]
+    lead = first["score"][0 if first["team"] == away else 1] - first["score"][1 if first["team"] == away else 0]
+    situation = "tied" if lead == 0 else f"up {lead}" if lead > 0 else f"down {-lead}"
+    intro = f"{TEAMS[first['team']]['name']} ball, {situation}, {first['clock'].replace('4th ', '').strip()}{' left' if first['clock'].startswith('4th') else ''}."
+    zones = g.get("zones") or None
+    return {
+        "slug": g["slug"], "title": g["title"], "date": g["date"], "away": away, "home": home, "final": g["final"], "intro": intro,
+        "teams": {away: {**dict(zip(["jersey", "helmet", "stripe", "pants"], TEAMS[away]["white"])), "zone": TEAMS[away]["zone"]},
+                  home: {**dict(zip(["jersey", "helmet", "stripe", "pants"], TEAMS[home]["dark"])), "zone": TEAMS[home]["zone"]}},
+        "zones": zones, "plays": rows,
+    }
 
-plays[-1]["final"] = True
-replay = {
-    "title": "Ohio State 30, Michigan 27 (2OT)",
-    "date": "Nov. 26, 2016",
-    "names": NAMES,
-    "plays": plays,
-}
-with open(OUT, "w") as f:
-    json.dump(replay, f, indent=1)
-print(f"{len(plays)} plays -> {OUT}")
-for p in plays:
-    print(f"{p['team']:4} {p['kind']:5} x={p['x']:3} gain={p['gain']:3} {p['down']:22} {p['score']}->{p['after']} {p['text'][:70]}")
+
+index = []
+for g in GAMES:
+    replay = build(g)
+    with open(f"public/replays/{g['slug']}.json", "w") as f:
+        json.dump(replay, f, separators=(",", ":"))
+    index.append({"slug": g["slug"], "title": g["title"], "date": g["date"]})
+    print(f"\n== {g['slug']}: {len(replay['plays'])} plays  ({replay['intro']})")
+    for p in replay["plays"]:
+        flags = " ".join(k for k in ("td", "endDrive", "final", "still") if p.get(k))
+        print(f"  {p['team']:4} {p['kind']:8} x={p['x']:3} gain={p['gain']:4} {p['down']:22.22} {p['score']}->{p['after']} {flags:18} {p['text'][:60]}")
+with open("src/data/field-games.json", "w") as f:
+    json.dump(index, f, indent=1)
