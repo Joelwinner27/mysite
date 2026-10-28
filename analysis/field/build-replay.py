@@ -273,6 +273,8 @@ def build(g):
         "slug": g["slug"], "title": g["title"], "date": g["date"], "away": away, "home": home, "final": g["final"], "intro": intro,
         "teams": {away: {**dict(zip(["jersey", "helmet", "stripe", "pants"], TEAMS[away]["white"])), "zone": TEAMS[away]["zone"]},
                   home: {**dict(zip(["jersey", "helmet", "stripe", "pants"], TEAMS[home]["dark"])), "zone": TEAMS[home]["zone"]}},
+        # midfield: the home team's name in plain block letters, or the bowl's name at a bowl
+        "midfield": (g["title"].split(":")[0].upper(), "#231c14") if ":" in g["title"] else (TEAMS[home]["zone"][0], TEAMS[home]["zone"][1]),
         "zones": zones, "plays": rows,
     }
 

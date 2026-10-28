@@ -84,7 +84,7 @@
   type Game = {
     slug: string; title: string; date: string; away: string; home: string; final: string; intro: string;
     teams: Record<string, { jersey: string; helmet: string; stripe: string; pants: string; zone: [string, string] }>;
-    zones: [string, string][] | null; plays: Row[];
+    zones: [string, string][] | null; midfield: [string, string]; plays: Row[];
   };
   type Play = {
     form: Record<string, V>; tracks: Record<string, Key[]>; carrier: string; release: number; catchT: number; tEnd: number;
@@ -494,6 +494,12 @@
       for (let x = Math.ceil(left / 10) * 10; x < left + viewW + 10; x += 10) if (x > 0 && x < 100) {
         const n = String(x <= 50 ? x : 100 - x);
         for (const y of [-15, 15]) { fx.fillText(n[0], x - 1.5, y); fx.fillText(n[1], x + 1.5, y); }
+      }
+      // midfield: the home team's name (or the bowl's), sized to fit between the 40s
+      if (left < 62 && left + viewW > 38) {
+        const [word, color] = game.midfield;
+        fx.font = `600 ${Math.min(5.5, 26 / (word.length * 0.62))}px "Oswald", sans-serif`;
+        fx.fillStyle = color; fx.fillText(word, 50, 0);
       }
       for (const [x, i, rot] of [[-5, 0, Math.PI / 2], [105, 1, -Math.PI / 2]] as const) {
         if (x < left - 10 || x > left + viewW + 10) continue;
