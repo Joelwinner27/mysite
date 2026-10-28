@@ -98,6 +98,14 @@
 .js [data-rule] { transform: scaleX(0); transform-origin: left; transition: transform 1100ms var(--ease-base); }
 .js [data-rule].is-visible { transform: none; }
 
+/* Home intro text sits on paper strips over the animated field. */
+.hero-label {
+  background: rgb(243 235 220 / 0.92);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0 0.25em;
+}
+
 .tagline-word {
   color: rgb(35 28 20 / 0.25);
   transition: color 500ms var(--ease-base);

@@ -4,6 +4,7 @@ import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
 import AnalysisRow from "../components/AnalysisRow.astro";
 import ProjectCard from "../components/ProjectCard.astro";
+import FieldAscii from "../components/FieldAscii.astro";
 import { byNewest, formatDate, readingTime, site, typeLabel } from "../data/site";
 
 const posts = (await getCollection("analysis")).sort(byNewest);
@@ -11,15 +12,18 @@ const [latest, ...recent] = posts;
 const projects = (await getCollection("projects")).sort((a, b) => a.data.order - b.data.order);
 ---
 <Base>
-  <section class="mx-auto max-w-6xl px-6 pt-16 sm:pt-24">
-    <p data-reveal class="kicker text-muted">Cincinnati, Ohio · Ohio State Statistics ’25</p>
-    <h1 data-reveal class="mt-4 max-w-[760px] font-masthead text-4xl leading-none font-extrabold tracking-tight sm:text-7xl">
-      Analyst by day.<br /> Sports nerd <br class="sm:hidden" />by night.
-    </h1>
-    <p data-reveal class="mt-6 max-w-[620px] text-xl text-ink-soft">
-      I build data models for a living and use the same tools to argue about college football, baseball and March
-      Madness. This is where the work behind the posts lives.
-    </p>
+  <section class="relative overflow-hidden">
+    <FieldAscii />
+    <div class="relative mx-auto max-w-6xl px-6 pt-16 pb-40 sm:pt-24 sm:pb-48">
+      <p data-reveal class="kicker text-muted"><span class="hero-label">Cincinnati, Ohio · Ohio State Statistics ’25</span></p>
+      <h1 data-reveal class="mt-4 max-w-[760px] font-masthead text-4xl leading-tight font-extrabold tracking-tight sm:text-7xl sm:leading-[1.08]">
+        <span class="hero-label">Analyst by day.<br /> Sports nerd <br class="sm:hidden" />by night.</span>
+      </h1>
+      <p data-reveal class="mt-6 max-w-[620px] text-xl text-ink-soft">
+        <span class="hero-label">I build data models for a living and use the same tools to argue about college football, baseball and March
+        Madness. This is where the work behind the posts lives.</span>
+      </p>
+    </div>
   </section>
 
   <section class="mx-auto mt-12 grid max-w-6xl gap-8 px-6 lg:grid-cols-[3fr_2fr]">
