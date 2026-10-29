@@ -39,12 +39,12 @@ status = 301
 # Pages that moved in the Astro rebuild (2026-10)
 [[redirects]]
 from = "/about/"
-to = "/resume/"
+to = "/"
 status = 301
 
 [[redirects]]
 from = "/contact/"
-to = "/resume/"
+to = "/"
 status = 301
 
 [[redirects]]
@@ -85,10 +85,16 @@ status = 301
 
 [[redirects]]
 from = "/about-us/*"
-to = "/resume/"
+to = "/"
 status = 301
 
 [[redirects]]
 from = "/about-hugo/*"
-to = "/resume/"
+to = "/"
 status = 301
+
+# The résumé page is hidden for now (src/pages/_resume.astro); send it home until it's back
+[[redirects]]
+from = "/resume/"
+to = "/"
+status = 302

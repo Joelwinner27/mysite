@@ -19,7 +19,6 @@ export const site = {
 export const nav = [
   { label: "Analysis", href: "/analysis/" },
   { label: "Projects", href: "/projects/" },
-  { label: "Résumé", href: "/resume/" },
 ];
 
 export const typeLabel: Record<CollectionEntry<"analysis">["data"]["type"], string> = {
