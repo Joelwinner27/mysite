@@ -1,0 +1,80 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Icon from "../../components/Icon.astro";
+import BottomLine from "../../components/BottomLine.astro";
+import AnalysisRow from "../../components/AnalysisRow.astro";
+import { byNewest, formatDate, readingTime, shown, site, typeLabel } from "../../data/site";
+
+export async function getStaticPaths() {
+  const posts = (await getCollection("analysis")).sort(byNewest);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post, more: posts.filter((p) => p.id !== post.id && shown.analysis.includes(p.id)).slice(0, 3) },
+  }));
+}
+
+const { post, more } = Astro.props;
+const { Content } = await render(post);
+const { title, type, sport, date, summary, stats, chart, chartCaption, data, code, tools } = post.data;
+const url = new URL(`/analysis/${post.id}/`, Astro.site).href;
+const shareText = encodeURIComponent(title);
+const shareHref = `https://x.com/intent/post?text=${shareText}&url=${encodeURIComponent(url)}${site.x ? `&via=${site.x}` : ""}`;
+---
+<Base title={title} description={summary} image={`/og/analysis/${post.id}.png`}>
+  <article class="mx-auto max-w-3xl px-6 pt-10">
+    <a href="/analysis/" class="kicker inline-flex items-center gap-2 text-muted transition-colors duration-300 ease-base hover:text-press">
+      <Icon name="arrow-left" class="size-4" /> All analysis
+    </a>
+    <header class="mt-8">
+      <p class="kicker flex flex-wrap items-center gap-3">
+        <span class:list={[type === "quick-hit" ? "bg-press px-2 py-0.5 text-paper" : "text-press"]}>{typeLabel[type]}</span>
+        <span class="text-press">{sport}</span>
+        <span class="text-muted">{readingTime(post.body)} · {formatDate(date)}</span>
+      </p>
+      <h1 class="mt-4 font-masthead text-4xl leading-tight font-extrabold tracking-tight sm:text-5xl">{title}</h1>
+      <p class="mt-4 text-xl text-ink-soft italic">{summary}</p>
+    </header>
+
+    {stats && <div class="mt-8"><BottomLine stats={stats} /></div>}
+
+    {
+      chart && (
+        <figure class="mt-8 border border-ink bg-paper-light p-4">
+          <img src={chart} alt={chartCaption ?? ""} class="newsprint mx-auto" />
+          {chartCaption && <figcaption class="kicker mt-3 text-muted">{chartCaption}</figcaption>}
+        </figure>
+      )
+    }
+
+    <div class="prose mt-10">
+      <Content />
+    </div>
+
+    <footer class="mt-12 border-t-2 border-ink pt-4">
+      <h2 class="kicker text-ink">How I did it</h2>
+      <dl class="mt-3 grid grid-cols-[80px_1fr] gap-x-4 gap-y-2 text-ink-soft">
+        {data && <><dt class="kicker pt-1 text-muted">Data</dt><dd>{data}</dd></>}
+        {tools.length > 0 && <><dt class="kicker pt-1 text-muted">Tools</dt><dd>{tools.join(" · ")}</dd></>}
+        {code && <><dt class="kicker pt-1 text-muted">Code</dt><dd><a href={code} class="text-press underline underline-offset-4">View on GitHub</a></dd></>}
+      </dl>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href={shareHref} class="kicker inline-flex items-center gap-2 bg-ink px-3 py-2 text-paper transition-transform duration-300 ease-base hover:-translate-y-0.5 active:translate-y-px">
+          <Icon name="x-logo" class="size-4" /> Share on X
+        </a>
+        {
+          site.x && (
+            <a href={`https://x.com/${site.x}`} class="kicker inline-flex items-center gap-2 border border-ink px-3 py-2 text-ink transition-colors duration-300 ease-base hover:bg-ink hover:text-paper">
+              Follow @{site.x}
+            </a>
+          )
+        }
+      </div>
+    </footer>
+  </article>
+
+  <section class="mx-auto max-w-3xl px-6 pt-16">
+    <h2 class="kicker border-b border-ink pb-2 text-ink">More analysis</h2>
+    {more.map((p) => <AnalysisRow post={p} />)}
+  </section>
+</Base>

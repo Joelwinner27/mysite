@@ -1,0 +1,57 @@
+---
+import { getEntry } from "astro:content";
+import Base from "../layouts/Base.astro";
+import FieldAscii from "../components/FieldAscii.astro";
+import ComingSoon from "../components/ComingSoon.astro";
+
+// The three pieces on the front page for now, in order.
+const pi = (await getEntry("projects", "pi-scoreboard"))!;
+const march = (await getEntry("analysis", "march-madness-analysis"))!;
+const mlb = (await getEntry("analysis", "mlb_park_factors_analysis"))!;
+const work = [
+  { href: `/projects/${pi.id}/`, ...pi.data },
+  { href: `/analysis/${march.id}/`, ...march.data },
+  { href: `/analysis/${mlb.id}/`, ...mlb.data },
+];
+---
+<Base>
+  <section class="relative overflow-hidden">
+    <FieldAscii />
+    <div class="relative mx-auto max-w-6xl px-6 pt-20 pb-48 sm:pt-28 sm:pb-56">
+      <h1 data-reveal class="font-masthead text-5xl leading-tight font-extrabold tracking-tight sm:text-8xl">
+        <span class="hero-label">Joel Winner</span>
+      </h1>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 pt-16">
+    <div data-reveal class="border-b border-ink pb-2">
+      <h2 class="font-masthead text-2xl font-extrabold sm:text-3xl">Work</h2>
+    </div>
+    <ul class="mt-6 grid gap-6 md:grid-cols-3">
+      {
+        work.map((w) => (
+          <li data-reveal>
+            <a href={w.href} class="group flex h-full flex-col border border-ink bg-paper-light transition-transform duration-300 ease-base hover:-translate-y-1 active:translate-y-0">
+              {w.thumbnail && (
+                <div class="overflow-hidden border-b border-ink">
+                  <img src={w.thumbnail} alt="" loading="lazy" class="newsprint aspect-[16/9] w-full object-cover object-top transition-transform duration-500 ease-base group-hover:scale-[1.03]" />
+                </div>
+              )}
+              <div class="flex flex-1 flex-col gap-2 p-4">
+                <p class="kicker text-press">{w.sport}</p>
+                <h3 class="headline text-xl text-ink">{w.title}</h3>
+                <p class="text-ink-soft">{w.summary}</p>
+                <p class="kicker mt-auto pt-3 text-muted">{w.tools.join(" · ")}</p>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 pt-20">
+    <ComingSoon />
+  </section>
+</Base>

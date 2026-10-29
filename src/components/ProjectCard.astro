@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  project: CollectionEntry<"projects">;
+}
+const { project } = Astro.props;
+const { title, sport, summary, tools, thumbnail, live } = project.data;
+---
+<a href={`/projects/${project.id}/`} class="group flex h-full flex-col border border-ink bg-paper-light transition-transform duration-300 ease-base hover:-translate-y-1 active:translate-y-0">
+  {
+    thumbnail && (
+      <div class="overflow-hidden border-b border-ink">
+        <img src={thumbnail} alt="" loading="lazy" class="newsprint aspect-[16/9] w-full object-cover object-top transition-transform duration-500 ease-base group-hover:scale-[1.03]" />
+      </div>
+    )
+  }
+  <div class="flex flex-1 flex-col gap-2 p-4">
+    <p class="kicker flex items-center gap-3 text-press">
+      {sport}
+      {live && <span class="flex items-center gap-2 text-live"><span class="size-2 rounded-full bg-live" />Live</span>}
+    </p>
+    <h3 class="headline text-xl text-ink">{title}</h3>
+    <p class="text-ink-soft">{summary}</p>
+    <p class="kicker mt-auto pt-3 text-muted">{tools.join(" · ")}</p>
+  </div>
+</a>

@@ -1,0 +1,60 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import AnalysisRow from "../../components/AnalysisRow.astro";
+import ComingSoon from "../../components/ComingSoon.astro";
+import { byNewest, shown, typeLabel } from "../../data/site";
+
+const posts = (await getCollection("analysis", (p) => shown.analysis.includes(p.id))).sort(byNewest);
+const filters = [["all", "All"], ...Object.entries(typeLabel)];
+---
+<Base title="Analysis" description="Sports analytics by Joel Winner: quick hits after big games, fuller takes and deep dives.">
+  <PageHeader
+    kicker="Analysis"
+    title="The work behind the posts"
+    intro="Quick hits filed the night of a game, fuller takes during the season, and deep dives when a question needs a real model."
+  />
+  <div class="mx-auto max-w-6xl px-6">
+    <div role="group" aria-label="Filter by type" class="kicker flex flex-wrap gap-2 border-b border-ink pb-4">
+      {
+        filters.map(([value, label], i) => (
+          <button
+            type="button"
+            data-filter={value}
+            aria-pressed={i === 0 ? "true" : "false"}
+            class="border border-ink px-3 py-1 text-ink transition-colors duration-300 ease-base hover:bg-paper-dark aria-pressed:bg-ink aria-pressed:text-paper"
+          >
+            {label}
+          </button>
+        ))
+      }
+    </div>
+    <div id="analysis-list">
+      {posts.map((p) => <AnalysisRow post={p} />)}
+    </div>
+    <div id="analysis-empty" hidden class="pt-8"><ComingSoon text="Nothing filed under this one yet. Quick hits after big games and more write ups are on the way." /></div>
+    <div id="analysis-more" class="pt-16"><ComingSoon /></div>
+  </div>
+</Base>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>("[data-filter]");
+  const rows = document.querySelectorAll<HTMLElement>("#analysis-list [data-type]");
+  const empty = document.getElementById("analysis-empty")!;
+  const more = document.getElementById("analysis-more")!;
+  buttons.forEach((btn) =>
+    btn.addEventListener("click", () => {
+      const f = btn.dataset.filter;
+      buttons.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+      let shown = 0;
+      rows.forEach((row) => {
+        const show = f === "all" || row.dataset.type === f;
+        row.hidden = !show;
+        if (show) shown++;
+      });
+      empty.hidden = shown > 0;
+      more.hidden = shown === 0;
+    }),
+  );
+</script>

@@ -1,5 +1,0 @@
-baseURL = "https://joelwinner.org/"
-
-[module]
-[module.hugoVersion]
-min = "0.124.0"

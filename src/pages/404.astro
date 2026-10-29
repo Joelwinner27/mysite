@@ -1,0 +1,17 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+---
+<Base title="Page not found">
+  <section class="mx-auto flex max-w-3xl flex-col items-center px-6 pt-16 pb-24 text-center">
+    <p class="kicker text-press">Error 404 · Incomplete pass</p>
+    <h1 class="mt-4 font-masthead text-6xl font-extrabold tracking-tight sm:text-7xl">Nothing here</h1>
+    <p class="mt-6 max-w-[560px] text-xl text-ink-soft italic">
+      This page doesn’t exist, or it moved when the site was rebuilt. Every post and project is still around.
+    </p>
+    <div class="mt-10 flex flex-wrap justify-center gap-4">
+      <a href="/" class="kicker inline-flex items-center gap-2 bg-ink px-3 py-2 text-paper transition-transform duration-300 ease-base hover:-translate-y-0.5">Home</a>
+      <a href="/analysis/" class="kicker inline-flex items-center gap-2 border border-ink px-3 py-2 text-ink transition-colors duration-300 ease-base hover:bg-ink hover:text-paper">All analysis <Icon name="arrow-right" class="size-4" /></a>
+    </div>
+  </section>
+</Base>

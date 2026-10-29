@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "site",
+      "runtimeExecutable": "/Users/joelwinn/.local/node-v22.23.4-darwin-x64/bin/node",
+      "runtimeArgs": ["node_modules/astro/astro.js", "dev", "--port", "4321"],
+      "port": 4321
+    }
+  ]
+}

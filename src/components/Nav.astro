@@ -1,0 +1,36 @@
+---
+import { nav, site } from "../data/site";
+
+const path = Astro.url.pathname;
+---
+<header class="sticky top-0 z-40 bg-paper/90 backdrop-blur-md">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 border-b border-ink px-6 py-4">
+    <a href="/" class="font-masthead text-xl font-extrabold tracking-tight whitespace-nowrap text-ink sm:text-2xl">Joel Winner</a>
+    <nav aria-label="Main">
+      <ul class="kicker flex items-center gap-3 sm:gap-6">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={path.startsWith(item.href) ? "page" : undefined}
+                class="text-ink transition-colors duration-300 ease-base hover:text-press aria-[current=page]:text-press"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+        {
+          site.x && (
+            <li class="hidden sm:block">
+              <a href={`https://x.com/${site.x}`} class="border border-ink px-2 py-1 text-ink transition-colors duration-300 ease-base hover:bg-ink hover:text-paper">
+                Follow on X
+              </a>
+            </li>
+          )
+        }
+      </ul>
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,22 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { shortDate, typeLabel } from "../data/site";
+
+interface Props {
+  post: CollectionEntry<"analysis">;
+}
+const { post } = Astro.props;
+const { title, type, sport, date } = post.data;
+---
+<a
+  href={`/analysis/${post.id}/`}
+  data-type={type}
+  class="group grid grid-cols-[64px_1fr] items-baseline gap-x-4 gap-y-1 border-b border-dotted border-rule py-4 transition-colors duration-300 ease-base hover:bg-paper-dark sm:grid-cols-[72px_96px_1fr_72px] sm:px-2"
+>
+  <time datetime={date.toISOString()} class="kicker text-muted">{shortDate(date)}</time>
+  <span class:list={["kicker hidden sm:inline", type === "quick-hit" ? "text-press" : "text-muted"]}>{typeLabel[type]}</span>
+  <span class="headline text-lg leading-snug text-ink decoration-press decoration-2 underline-offset-4 group-hover:underline">{title}</span>
+  <span class="kicker col-start-2 text-press sm:col-start-auto sm:text-right">
+    <span class="sm:hidden">{typeLabel[type]} · </span>{sport}
+  </span>
+</a>

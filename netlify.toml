@@ -1,30 +1,81 @@
 [build]
-command = 'hugo'
-publish = 'public'
+command = "npm run build"
+publish = "dist"
 
 [build.environment]
-HUGO_VERSION = '0.147.2'
+NODE_VERSION = "22"
 
-[context]
-[context.branch-deploy]
-command = 'hugo -F -b $DEPLOY_PRIME_URL'
+# Analysis moved under /analysis/ (2026-10). Specific rules first: Netlify uses the first match.
+[[redirects]]
+from = "/posts/2020-12-01-r-rmarkdown/*"
+to = "/projects/fast-food-nutrition/"
+status = 301
 
-[context.deploy-preview]
-command = 'hugo -F -b $DEPLOY_PRIME_URL'
+[[redirects]]
+from = "/posts/:slug"
+to = "/analysis/:slug/"
+status = 301
 
-[context.production]
-[context.production.environment]
-HUGO_ENV = 'production'
+[[redirects]]
+from = "/posts/"
+to = "/analysis/"
+status = 301
 
-# Old addresses from before the cleanup
+[[redirects]]
+from = "/projects/mlb_park_factors_analysis/*"
+to = "/analysis/mlb_park_factors_analysis/"
+status = 301
+
+[[redirects]]
+from = "/projects/march-madness-analysis/*"
+to = "/analysis/march-madness-analysis/"
+status = 301
+
+[[redirects]]
+from = "/projects/projreport/*"
+to = "/analysis/projreport/"
+status = 301
+
+# Pages that moved in the Astro rebuild (2026-10)
+[[redirects]]
+from = "/about/"
+to = "/"
+status = 301
+
+[[redirects]]
+from = "/contact/"
+to = "/"
+status = 301
+
+[[redirects]]
+from = "/tags/*"
+to = "/analysis/"
+status = 301
+
+[[redirects]]
+from = "/categories/*"
+to = "/analysis/"
+status = 301
+
+[[redirects]]
+from = "/authors/*"
+to = "/"
+status = 301
+
+[[redirects]]
+from = "/series/*"
+to = "/analysis/"
+status = 301
+
+# Old addresses from before the 2026-09 cleanup
 [[redirects]]
 from = "/post/11.13-kenpom/*"
-to = "/posts/kenpom-11.13/"
+to = "/analysis/kenpom-11.13/"
 status = 301
 
 [[redirects]]
 from = "/post/*"
-to = "/posts/"
+to = "/analysis/"
 status = 301
 
 [[redirects]]
@@ -34,10 +85,16 @@ status = 301
 
 [[redirects]]
 from = "/about-us/*"
-to = "/about/"
+to = "/"
 status = 301
 
 [[redirects]]
 from = "/about-hugo/*"
-to = "/about/"
+to = "/"
 status = 301
+
+# The résumé page is hidden for now (src/pages/_resume.astro); send it home until it's back
+[[redirects]]
+from = "/resume/"
+to = "/"
+status = 302
