@@ -7,10 +7,18 @@ at random. Run from the repo root:  python3 analysis/field/build-replay.py
 Plays ESPN describes in ways the animation can't read (returns, trick plays) are set by hand
 in SPECIAL, keyed by a bit of the play's text. Yard lines there are from the offense's side:
 0 is its own goal line, 100 the goal it attacks.
+
+Each snap also gets the home team's win probability: ESPN's own where it has one (2016 and
+later, mostly), otherwise a small score/clock/field position model (see model_wp). Pass targets
+get their real position (WR, TE or RB) from ESPN's athlete pages, cached in positions.json, so
+the routes can match who caught the ball.
 """
 import json
+import os
 import re
 import urllib.request
+import zlib
+from math import erf, sqrt
 
 # Uniform colors are approximate for that day: the home team (as ESPN lists it) in its dark
 # jersey, the road team in white.
@@ -107,9 +115,56 @@ QB_NAMES = ("J.T. Barrett", "Wilton Speight", "Troy Smith", "Chad Henne", "Carda
             "Jared Zabransky", "Paul Thompson")
 
 
-def fetch(event):
-    url = f"https://site.api.espn.com/apis/site/v2/sports/football/college-football/summary?event={event}"
+def get(url):
     return json.load(urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (joelwinner.org)"})))
+
+
+def fetch(event):
+    return get(f"https://site.api.espn.com/apis/site/v2/sports/football/college-football/summary?event={event}")
+
+
+POS_FILE = "analysis/field/positions.json"
+POSITIONS = json.load(open(POS_FILE)) if os.path.exists(POS_FILE) else {}
+
+
+def position(athlete_id, season):
+    if athlete_id not in POSITIONS:
+        try:
+            a = get(f"https://sports.core.api.espn.com/v2/sports/football/leagues/college-football/seasons/{season}/athletes/{athlete_id}")
+            POSITIONS[athlete_id] = a.get("position", {}).get("abbreviation", "")
+        except Exception:
+            POSITIONS[athlete_id] = ""
+    return POSITIONS[athlete_id]
+
+
+def seconds_left(p):
+    q = p["period"]["number"]
+    if q > 4:
+        return None
+    m, s = p["clock"]["displayValue"].split(":")
+    return (4 - q) * 900 + int(m) * 60 + int(s)
+
+
+def model_wp(row, secs, home):
+    """Home win probability before a snap, for games ESPN has no numbers for.
+
+    The offense's lead plus the points its field position is worth, against a spread of final
+    margins that narrows as the clock runs out: P = Phi((lead + EP) / (13 * sqrt(minutes / 60))).
+    Field position counts for less in the last couple of minutes, when there's no time to use it.
+    Overtime is treated as about four minutes of football.
+    """
+    ti = 1 if row["team"] == home else 0
+    lead = row["score"][ti] - row["score"][1 - ti]
+    ep = {"Extra point": 0.95, "Two-point try": 0.9}.get(row["down"])
+    if ep is None:
+        ep = (0.07 * row["x"] - 0.5) * (1 if secs is None else min(1, (secs + 60) / 180))
+    t = 240 if secs is None else secs
+    p = 0.5 * (1 + erf((lead + ep) / (13 * sqrt((t + 180) / 3600)) / sqrt(2)))
+    return round(p if ti else 1 - p, 3)
+
+
+def lean(name):
+    return 1 if zlib.crc32(name.encode()) % 2 else -1
 
 
 def clock(p):
@@ -168,6 +223,9 @@ def build(g):
     ids = {c["team"]["id"]: c["team"]["abbreviation"] for c in comp}
     home, away = side["home"], side["away"]
     drives = game["drives"]["previous"]
+    season = game["header"]["season"]["year"]
+    athletes = {a["athlete"]["displayName"]: a["athlete"]["id"] for team in game["boxscore"].get("players", [])
+                for cat in team["statistics"] for a in cat["athletes"]}
     # score before the first replayed play, from the last play ahead of it
     first_id = next(p["id"] for p in drives[g["drives"][0]]["plays"])
     before = [0, 0]
@@ -216,7 +274,17 @@ def build(g):
                     row.update({key: v for key, v in special.items() if key != "kind"})
                     if k == "turnover":
                         row["defTD"] = special["to"][0] < 0
-            row.update({"team": team, "clock": clock(p), "text": tidy(text)})
+            row.update({"team": team, "clock": clock(p), "text": tidy(text), "pid": p["id"], "secs": seconds_left(p)})
+            # who the ball went to, so the route matches: a back, a tight end or a receiver
+            m = (re.search(r"pass (?:complete |incomplete )?to ([A-Z][\w.'-]*(?: [A-Z][\w.'-]*)*?)(?= for|\.|,|$| \()", row["text"])
+                 or re.match(r"([A-Z][\w.'-]*(?: [A-Z][\w.'-]*)*?) \d+ Yd pass from", row["text"]))
+            if m and row["kind"] in ("pass", "inc"):
+                name = m[1] if m[1] in athletes else m[1].removesuffix(".")
+                pos = position(athletes[name], season) if name in athletes else ""
+                row["target"] = "RB" if pos in ("RB", "FB", "HB") else "TE" if pos == "TE" else "WR"
+                row["side"] = lean(name)
+            elif row["kind"] in ("run", "qbrun"):
+                row["side"] = lean(row["text"])
             for key, note in g.get("notes", {}).items():
                 if key in text:
                     row["note"] = note
@@ -233,10 +301,11 @@ def build(g):
                     row["xp"] = True  # fold the kick into the return so the replay can end on it
                 elif m:
                     rows.append({"team": team if row["td"] else other, "kind": "fg", "good": True, "x": 97, "gain": 0, "toGain": None, "down": "Extra point",
-                                 "td": False, "clock": clock(p), "text": f"{m[1]} extra point is good"})
+                                 "td": False, "clock": clock(p), "text": f"{m[1]} extra point is good", "pid": p["id"], "secs": row["secs"], "conv": True})
                 else:
                     rows.append({"team": team, "kind": "pass" if conv else "run", "x": 97, "gain": 3, "toGain": None, "down": "Two-point try", "td": True,
-                                 "clock": clock(p), "text": f"Two-point try good: {conv[1]} pass to {conv[3]}" if conv else f"Two-point try good: {run2[1]} run"})
+                                 "clock": clock(p), "text": f"Two-point try good: {conv[1]} pass to {conv[3]}" if conv else f"Two-point try good: {run2[1]} run",
+                                 "pid": p["id"], "secs": row["secs"], "conv": True, "side": lean(text)})
     # keep score ourselves: ESPN's running score sometimes moves a play early
     score = before
     for r in rows:
@@ -262,6 +331,19 @@ def build(g):
             r["endDrive"] = True
     rows[-1]["endDrive"] = rows[-1]["final"] = True
     final = [int(c["score"]) for c in sorted(comp, key=lambda c: c["homeAway"] != "away")]
+    # win probability before each snap: ESPN's number after the previous play, or the model's
+    espn = {w["playId"]: w["homeWinPercentage"] for w in game.get("winprobability", [])}
+    order = [p["id"] for d in drives for p in d["plays"]]
+    for r in rows:
+        if espn:
+            # a conversion split out of a touchdown's text comes right after that play
+            i = order.index(r["pid"]) + (1 if r.get("conv") else 0)
+            prev = next((order[j] for j in range(i - 1, -1, -1) if order[j] in espn), None)
+            r["wp"] = round(espn[prev], 3) if prev else 0.5
+        else:
+            r["wp"] = model_wp(r, r["secs"], home)
+        for k in ("conv", "pid", "secs"):
+            r.pop(k, None)
     if rows[-1]["after"] != final and g["drives"][-1] == len(drives) - 1:
         print(f"  !! {g['slug']}: replay ends {rows[-1]['after']}, ESPN final {final}")
     first = rows[0]
@@ -276,6 +358,7 @@ def build(g):
         # midfield: the home team's name in plain block letters, or the bowl's name at a bowl
         "midfield": (g["title"].split(":")[0].upper(), "#231c14") if ":" in g["title"] else (TEAMS[home]["zone"][0], TEAMS[home]["zone"][1]),
         "zones": zones, "plays": rows,
+        "wpSource": "ESPN" if espn else "model", "wpFinal": 1 if final[1] > final[0] else 0,
     }
 
 
@@ -288,6 +371,8 @@ for g in GAMES:
     print(f"\n== {g['slug']}: {len(replay['plays'])} plays  ({replay['intro']})")
     for p in replay["plays"]:
         flags = " ".join(k for k in ("td", "endDrive", "final", "still") if p.get(k))
-        print(f"  {p['team']:4} {p['kind']:8} x={p['x']:3} gain={p['gain']:4} {p['down']:22.22} {p['score']}->{p['after']} {flags:18} {p['text'][:60]}")
+        print(f"  {p['team']:4} {p['kind']:8} x={p['x']:3} gain={p['gain']:4} {p['down']:22.22} {p['score']}->{p['after']} wp={p['wp']:.2f} {p.get('target', ''):2} {p.get('side', ''):2} {flags:18} {p['text'][:50]}")
 with open("src/data/field-games.json", "w") as f:
     json.dump(index, f, indent=1)
+with open(POS_FILE, "w") as f:
+    json.dump(POSITIONS, f, indent=0, sort_keys=True)
