@@ -3,12 +3,15 @@ import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import PageHeader from "../../components/PageHeader.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
+import ComingSoon from "../../components/ComingSoon.astro";
+import { shown } from "../../data/site";
 
-const projects = (await getCollection("projects")).sort((a, b) => a.data.order - b.data.order);
+const projects = (await getCollection("projects", (p) => shown.projects.includes(p.id))).sort((a, b) => a.data.order - b.data.order);
 ---
-<Base title="Projects" description="Tools and dashboards Joel Winner has built: a live sports line board and a nutrition dashboard.">
+<Base title="Projects" description="Tools Joel Winner has built, starting with a live sports line board on a Raspberry Pi.">
   <PageHeader kicker="Projects" title="Things I’ve built" intro="Tools and dashboards, as opposed to write ups. For the analysis, see the Analysis page." />
   <ul class="mx-auto grid max-w-6xl gap-6 border-t border-ink px-6 pt-8 sm:grid-cols-2">
     {projects.map((p) => <li data-reveal><ProjectCard project={p} /></li>)}
   </ul>
+  <div class="mx-auto max-w-6xl px-6 pt-16"><ComingSoon text="More tools and dashboards are on the way." /></div>
 </Base>

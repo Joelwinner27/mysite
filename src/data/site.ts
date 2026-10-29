@@ -16,6 +16,13 @@ export const site = {
   },
 };
 
+// What the site lists while it's being rebuilt. Everything else stays published at its own URL
+// (so old links still work) but doesn't show up in any list; add an id here to bring it back.
+export const shown = {
+  analysis: ["march-madness-analysis", "mlb_park_factors_analysis"],
+  projects: ["pi-scoreboard"],
+};
+
 export const nav = [
   { label: "Analysis", href: "/analysis/" },
   { label: "Projects", href: "/projects/" },

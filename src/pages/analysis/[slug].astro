@@ -4,13 +4,13 @@ import Base from "../../layouts/Base.astro";
 import Icon from "../../components/Icon.astro";
 import BottomLine from "../../components/BottomLine.astro";
 import AnalysisRow from "../../components/AnalysisRow.astro";
-import { byNewest, formatDate, readingTime, site, typeLabel } from "../../data/site";
+import { byNewest, formatDate, readingTime, shown, site, typeLabel } from "../../data/site";
 
 export async function getStaticPaths() {
   const posts = (await getCollection("analysis")).sort(byNewest);
   return posts.map((post) => ({
     params: { slug: post.id },
-    props: { post, more: posts.filter((p) => p.id !== post.id).slice(0, 3) },
+    props: { post, more: posts.filter((p) => p.id !== post.id && shown.analysis.includes(p.id)).slice(0, 3) },
   }));
 }
 

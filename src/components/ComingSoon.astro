@@ -1,0 +1,26 @@
+---
+// Stands in for anything not back yet while the site is rebuilt.
+interface Props {
+  text?: string;
+}
+const { text = "The site is being rebuilt. More write ups, quick hits after big games and new projects are on the way." } = Astro.props;
+---
+<div data-reveal class="double-rule flex flex-col items-start gap-3 py-8 sm:flex-row sm:items-center sm:justify-between">
+  <div>
+    <p class="kicker text-press">Work in progress</p>
+    <p class="mt-2 font-masthead text-3xl font-extrabold sm:text-4xl">More coming soon<span class="coming-cursor" aria-hidden="true">_</span></p>
+  </div>
+  <p class="max-w-[420px] text-lg text-ink-soft">{text}</p>
+</div>
+
+<style>
+  .coming-cursor {
+    animation: blink 1.1s steps(1) infinite;
+  }
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .coming-cursor { animation: none; }
+  }
+</style>
